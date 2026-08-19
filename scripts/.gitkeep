@@ -1,0 +1,2 @@
+# Placeholder — ingest scripts will live here.
+# Planned: fetch_schedule.py, snapshot_secondary.py, build_features.py, train_model.py

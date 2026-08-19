@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ticket Price Model — Explorer</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f4f5f7;color:#1c1c1c;line-height:1.45}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 48px}
+  h1{font-family:Georgia,serif;font-size:28px}
+  h2{font-family:Georgia,serif;font-size:20px;margin:24px 0 10px}
+  h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:#555;margin:16px 0 8px}
+  .sub{font-size:14px;color:#444;margin-top:8px;max-width:920px}
+  .banner{font-size:13px;background:#eef3f8;border:1px solid #c5d0de;border-radius:6px;padding:12px 14px;margin:14px 0;line-height:1.5}
+  .banner.warn{background:#fff8e6;border-color:#e6d9a8}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:800px){.grid2,.grid3{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid #d0d4db;border-radius:8px;padding:16px 18px}
+  .card p,.card li{font-size:13px;color:#444}
+  .card ul{margin:8px 0 0 18px}
+  .card li{margin:4px 0}
+  .chip{display:inline-block;background:#eef3f8;border:1px solid #c5d0de;border-radius:4px;padding:4px 8px;font-size:12px;margin:3px 4px 3px 0}
+  .chip.pl{background:#e8f4ec;border-color:#a8d5b8}
+  .chip.wnba{background:#fce8f0;border-color:#e8b8cc}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+  th,td{padding:8px 10px;border-bottom:1px solid #e8eaef;text-align:left}
+  th{background:#1c1c1c;color:#fff;font-size:10px;text-transform:uppercase}
+  tr:nth-child(even){background:#fafbfc}
+  .muted{font-size:12px;color:#666}
+  .hide{display:none!important}
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+  .kpi{background:#f7f8fa;border:1px solid #e2e5eb;border-radius:6px;padding:12px;text-align:center}
+  .kpi .v{font-size:22px;font-weight:700;font-family:Georgia,serif}
+  .kpi .l{font-size:10px;color:#666;text-transform:uppercase;margin-top:4px}
+  .kpi .d{font-size:11px;color:#888;margin-top:4px}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:12px}
+  .bar-label{width:140px;flex-shrink:0;color:#444}
+  .bar-track{flex:1;height:22px;background:#eceef2;border-radius:4px;overflow:hidden;position:relative}
+  .bar-fill{height:100%;border-radius:4px;transition:width .3s}
+  .bar-fill.wnba{background:linear-gradient(90deg,#c44d7a,#8b2252)}
+  .bar-fill.pl{background:linear-gradient(90deg,#2d6a4f,#1b4332)}
+  .bar-fill.neutral{background:#3d5a80}
+  .bar-val{width:52px;text-align:right;font-weight:700;font-size:12px}
+  .compare-grid{display:grid;grid-template-columns:1fr 60px 1fr;gap:12px;align-items:start;margin-top:12px}
+  @media(max-width:700px){.compare-grid{grid-template-columns:1fr}}
+  .vs{text-align:center;font-weight:800;font-size:18px;color:#888;padding-top:40px}
+  .chart-box{background:#fafbfc;border:1px solid #e2e5eb;border-radius:8px;padding:16px;margin-top:12px}
+  .horizon-tabs{display:flex;gap:8px;margin:12px 0}
+  .horizon-tabs button{font:600 13px system-ui;padding:8px 16px;border-radius:6px;border:2px solid #1c1c1c;background:#fff;cursor:pointer}
+  .horizon-tabs button.active{background:#1c1c1c;color:#fff}
+  svg text{font-family:system-ui,sans-serif}
+  footer{margin-top:24px;font-size:11px;color:#777;border-top:1px solid #e2e5eb;padding-top:14px}
+  .top-nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:22px;padding:12px 14px;background:#fff;border:1px solid #d0d4db;border-radius:10px;box-shadow:0 1px 2px rgba(28,28,28,.04)}
+  .top-nav .nav-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#666;margin-right:4px}
+  .top-nav .tab{font:600 14px system-ui;padding:10px 16px;border-radius:8px;border:2px solid #1c1c1c;background:#fff;color:#1c1c1c;cursor:pointer;transition:background .12s,color .12s}
+  .top-nav .tab:hover{background:#eef3f8}
+  .top-nav .tab.active{background:#1c1c1c;color:#fff}
+  .checklist{font-size:13px}
+  .checklist li{margin:6px 0;color:#444}
+  .checklist .done{color:#1b7a45}
+  .checklist .todo{color:#666}
+  .hypothesis{background:#e8f4ec;border:1px solid #a8d5b8;border-radius:8px;padding:14px 16px;margin:14px 0}
+  .hypothesis p{font-size:14px;color:#1c1c1c;line-height:1.55}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header style="margin-bottom:8px;border-bottom:2px solid #1c1c1c;padding-bottom:12px">
+    <h1>Ticket Price Model</h1>
+    <p class="sub">Compare-contrast demand for <strong>new home markets</strong>: WNBA 2026 expansion (live retrospective) vs Premier League promoted clubs (historical backtest). Shell only — sample numbers illustrate the hypothesis until real listing data is wired in.</p>
+  </header>
+
+  <nav class="top-nav" aria-label="Main views">
+    <span class="nav-label">View</span>
+    <button type="button" class="tab active" data-view="overview">Overview</button>
+    <button type="button" class="tab" data-view="wnba">WNBA expansion</button>
+    <button type="button" class="tab" data-view="pl">Premier League</button>
+    <button type="button" class="tab" data-view="compare">Compare</button>
+    <button type="button" class="tab" data-view="model">Model</button>
+    <button type="button" class="tab" data-view="data">Data sources</button>
+  </nav>
+
+  <!-- OVERVIEW -->
+  <section id="view-overview">
+    <div class="banner warn"><strong>Status:</strong> Explorer shell. KPIs and charts use placeholder values. Next step: ingest secondary listing snapshots (see Data sources tab).</div>
+
+    <div class="hypothesis">
+      <h3>Core hypothesis</h3>
+      <p>When a <strong>marquee opponent</strong> plays on the road at a <strong>new or newly-promoted home venue</strong>, secondary-market prices rise more than primary face value — fans pay up for a rare “see them here once” game. Same logic should transfer from WNBA expansion → NWSL-style launches and from PL promoted clubs → new USL/NWSL venues.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Track A · WNBA 2026</h3>
+        <p>Inaugural season for expansion franchise(s). Build the model <em>in retrospect</em> as 2026 games complete — snapshot prices at 30 / 14 / 3 days out.</p>
+        <ul>
+          <li>Target: secondary get-in price</li>
+          <li>Key interaction: marquee opponent × expansion home</li>
+          <li>Live season = natural experiment</li>
+        </ul>
+        <span class="chip wnba">Forward / retrospective</span>
+      </div>
+      <div class="card">
+        <h3>Track B · Premier League</h3>
+        <p>Recently promoted clubs (Championship → PL). Backtest on first PL season at existing ground — new division, new pricing tier, same stadium.</p>
+        <ul>
+          <li>Target: secondary min/median (StubHub UK, Viagogo)</li>
+          <li>Key interaction: Big Six away × promoted home</li>
+          <li>Rich historical panel for validation</li>
+        </ul>
+        <span class="chip pl">Historical backtest</span>
+      </div>
+    </div>
+
+    <h2>Primary vs secondary (England & US)</h2>
+    <div class="grid2">
+      <div class="card">
+        <p><strong>Primary</strong> — club or league direct sales. Price set by ticketing strategy (memberships, tiers, dynamic pricing within policy).</p>
+      </div>
+      <div class="card">
+        <p><strong>Secondary</strong> — resale (StubHub, SeatGeek, Viagogo). Reflects <em>scarcity + demand</em> when inventory is tight. <strong>Not the same market</strong> — we predict secondary, use primary as a feature.</p>
+      </div>
+    </div>
+
+    <div class="kpi-grid" style="margin-top:20px">
+      <div class="kpi"><div class="v">30 / 14 / 3</div><div class="l">Forecast horizons (days)</div><div class="d">Match commercial ticketing analytics</div></div>
+      <div class="kpi"><div class="v">LGBM + GAM</div><div class="l">Planned stack</div><div class="d">Interactions + smooth calendar effects</div></div>
+      <div class="kpi"><div class="v">2 tracks</div><div class="l">Compare-contrast</div><div class="d">Same feature logic, different sport</div></div>
+    </div>
+  </section>
+
+  <!-- WNBA -->
+  <section id="view-wnba" class="hide">
+    <h2>Track A — WNBA 2026 expansion</h2>
+    <p class="sub">Placeholder schedule rows for an expansion team’s first home stand. Replace with live data from WNBA schedule + SeatGeek/StubHub snapshots.</p>
+    <div class="banner"><span class="chip wnba">2026 season</span> Confirm expansion cities (Portland, Toronto, etc.) and arena capacities before modeling.</div>
+
+    <table id="wnba-table">
+      <thead>
+        <tr><th>Date</th><th>Opponent</th><th>Tier</th><th>Primary from</th><th>Secondary get-in (T−14)</th><th>Premium vs avg home</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="chart-box">
+      <h3>Sample — secondary price by opponent tier (expansion home)</h3>
+      <div id="wnba-bars"></div>
+    </div>
+  </section>
+
+  <!-- PL -->
+  <section id="view-pl" class="hide">
+    <h2>Track B — Premier League promoted club</h2>
+    <p class="sub">Illustrative first-season home fixtures for a promoted side (e.g. Sunderland 2025–26). Wire to football-data.co.uk fixtures + UK secondary snapshots.</p>
+
+    <table id="pl-table">
+      <thead>
+        <tr><th>Matchweek</th><th>Opponent</th><th>Big Six?</th><th>Primary band (est.)</th><th>Secondary from (T−14)</th><th>Premium vs avg home</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="chart-box">
+      <h3>Sample — Big Six away premium at promoted home ground</h3>
+      <div id="pl-bars"></div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section id="view-compare" class="hide">
+    <h2>Compare — marquee away × new home market</h2>
+    <p class="sub">Same interaction term, two sports. Does the “big name visit” bump look similar in % terms on secondary markets?</p>
+
+    <div class="compare-grid">
+      <div class="card">
+        <h3 style="margin-top:0">WNBA expansion home</h3>
+        <p class="muted">Avg secondary get-in, T−14 days</p>
+        <div class="bar-row"><span class="bar-label">Non-marquee opponent</span><div class="bar-track"><div class="bar-fill wnba" style="width:42%"></div></div><span class="bar-val">$42</span></div>
+        <div class="bar-row"><span class="bar-label">Marquee opponent</span><div class="bar-track"><div class="bar-fill wnba" style="width:78%"></div></div><span class="bar-val">$78</span></div>
+        <p class="muted" style="margin-top:10px"><strong>+86%</strong> placeholder bump — hypothesis to test</p>
+      </div>
+      <div class="vs">vs</div>
+      <div class="card">
+        <h3 style="margin-top:0">PL promoted home</h3>
+        <p class="muted">Avg secondary get-in, T−14 days</p>
+        <div class="bar-row"><span class="bar-label">Non–Big Six away</span><div class="bar-track"><div class="bar-fill pl" style="width:35%"></div></div><span class="bar-val">£35</span></div>
+        <div class="bar-row"><span class="bar-label">Big Six away</span><div class="bar-track"><div class="bar-fill pl" style="width:95%"></div></div><span class="bar-val">£95</span></div>
+        <p class="muted" style="margin-top:10px"><strong>+171%</strong> placeholder bump — often larger in PL sample anecdotes</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Why this matters for NWSL / new WNBA</h3>
+      <ul>
+        <li>Expansion teams have no loyalty base yet — opponent brand drives casual demand.</li>
+        <li>Primary prices may stay conservative; secondary tells you true willingness to pay.</li>
+        <li>If PL interaction is stable historically, use it to priors for US league expansion before you have 2+ seasons of data.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- MODEL -->
+  <section id="view-model" class="hide">
+    <h2>Model — planned architecture</h2>
+    <p class="sub">Rolling-origin backtest; one row per fixture × horizon (T−30, T−14, T−3).</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Features (shared)</h3>
+        <ul>
+          <li><code>days_to_event</code>, day-of-week, holiday/weekend</li>
+          <li><code>opponent_tier</code>, home team “new market” flag</li>
+          <li><code>opponent_tier × new_market_home</code></li>
+          <li>Arena capacity, metro population (optional)</li>
+          <li>Primary sold-out proxy, listing count on secondary</li>
+          <li>TV / national broadcast flag</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Stack</h3>
+        <ul>
+          <li><strong>LightGBM</strong> — opponent interactions, listing scarcity</li>
+          <li><strong>GAM</strong> — smooth calendar / days-to-event curves</li>
+          <li>Ensemble or residual: GAM on time, LGBM on categoricals</li>
+          <li>Metrics: MAPE / RMSE on log(price) at each horizon</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Placeholder backtest KPIs</h3>
+    <div class="horizon-tabs" id="horizon-tabs">
+      <button type="button" class="active" data-h="30">T−30 days</button>
+      <button type="button" data-h="14">T−14 days</button>
+      <button type="button" data-h="3">T−3 days</button>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="v" id="kpi-mape">—</div><div class="l">MAPE (secondary $)</div></div>
+      <div class="kpi"><div class="v" id="kpi-rmse">—</div><div class="l">RMSE log-price</div></div>
+      <div class="kpi"><div class="v" id="kpi-n">0</div><div class="l">Fixtures in holdout</div></div>
+    </div>
+    <div class="banner">Train script not run yet. Values populate after <code>scripts/build_features.py</code> + <code>scripts/train_model.py</code>.</div>
+
+    <svg id="forecast-chart" viewBox="0 0 560 200" width="100%" style="max-width:560px;margin-top:12px"></svg>
+  </section>
+
+  <!-- DATA -->
+  <section id="view-data" class="hide">
+    <h2>Data sources checklist</h2>
+    <p class="sub">Full detail in <a href="docs/DATA_SOURCES.md">docs/DATA_SOURCES.md</a> on GitHub.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Required — start here</h3>
+        <ul class="checklist">
+          <li class="todo">☐ WNBA / PL fixture tables (date, home, away)</li>
+          <li class="todo">☐ Secondary listing snapshots (timestamped)</li>
+          <li class="todo">☐ Opponent tier lookup (marquee / Big Six)</li>
+          <li class="todo">☐ Stadium capacity + expansion/promoted flags</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Nice-to-have</h3>
+        <ul class="checklist">
+          <li class="todo">☐ Primary price bands / sold-out scrape</li>
+          <li class="todo">☐ Attendance validation</li>
+          <li class="todo">☐ TV broadcast schedule</li>
+          <li class="todo">☐ SeatGeek affiliate API (preferred over raw scrape)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Source map</h3>
+    <table>
+      <thead><tr><th>Layer</th><th>WNBA</th><th>Premier League</th></tr></thead>
+      <tbody>
+        <tr><td>Schedule</td><td>wnba.com / stats.wnba.com</td><td>football-data.co.uk, API-Football</td></tr>
+        <tr><td>Secondary prices</td><td>SeatGeek, StubHub, TM resale</td><td>StubHub UK, Viagogo, Live Football Tickets</td></tr>
+        <tr><td>Primary prices</td><td>Ticketmaster face value</td><td>Club ticket pages (manual/scrape)</td></tr>
+        <tr><td>Validation</td><td>Box score attendance</td><td>Club reports, media</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    Ticket Price Model · <a href="https://github.com/colbymorris08/ticketpricemodel">github.com/colbymorris08/ticketpricemodel</a> · Placeholder demo data only
+  </footer>
+</div>
+
+<script>
+(function(){
+  const WNBA = [
+    {date:'2026-05-16', opp:'Indiana Fever', tier:2, primary:28, secondary:38, prem:0},
+    {date:'2026-05-22', opp:'Las Vegas Aces', tier:5, primary:35, secondary:89, prem:134},
+    {date:'2026-05-29', opp:'Connecticut Sun', tier:2, primary:28, secondary:41, prem:8},
+    {date:'2026-06-05', opp:'New York Liberty', tier:5, primary:35, secondary:95, prem:150},
+    {date:'2026-06-12', opp:'Chicago Sky', tier:3, primary:30, secondary:52, prem:37},
+    {date:'2026-06-19', opp:'Seattle Storm', tier:4, primary:32, secondary:67, prem:76},
+  ];
+  const PL = [
+    {mw:3, opp:'Brighton', big:false, primary:45, secondary:42, prem:0},
+    {mw:6, opp:'Liverpool', big:true, primary:55, secondary:125, prem:198},
+    {mw:9, opp:'Wolves', big:false, primary:45, secondary:38, prem:-10},
+    {mw:12, opp:'Arsenal', big:true, primary:55, secondary:140, prem:233},
+    {mw:15, opp:'Fulham', big:false, primary:45, secondary:44, prem:5},
+    {mw:19, opp:'Manchester City', big:true, primary:55, secondary:155, prem:269},
+  ];
+
+  function fillTable(id, rows, renderRow){
+    const tb = document.querySelector('#'+id+' tbody');
+    tb.innerHTML = rows.map(renderRow).join('');
+  }
+
+  fillTable('wnba-table', WNBA, r => {
+    const prem = r.prem ? (r.prem>0?'+':'')+r.prem+'%' : 'baseline';
+    return `<tr><td>${r.date}</td><td>${r.opp}</td><td>T${r.tier}</td><td>$${r.primary}</td><td>$${r.secondary}</td><td>${prem}</td></tr>`;
+  });
+
+  fillTable('pl-table', PL, r => {
+    const prem = r.prem ? (r.prem>0?'+':'')+r.prem+'%' : 'baseline';
+    return `<tr><td>${r.mw}</td><td>${r.opp}</td><td>${r.big?'Yes':'No'}</td><td>£${r.primary}</td><td>£${r.secondary}</td><td>${prem}</td></tr>`;
+  });
+
+  function renderBars(containerId, data, labelKey, valueKey, cls){
+    const max = Math.max(...data.map(d=>d[valueKey]));
+    document.getElementById(containerId).innerHTML = data.map(d =>
+      `<div class="bar-row"><span class="bar-label">${d[labelKey]}</span><div class="bar-track"><div class="bar-fill ${cls}" style="width:${Math.round(100*d[valueKey]/max)}%"></div></div><span class="bar-val">${d[valueKey]}</span></div>`
+    ).join('');
+  }
+
+  renderBars('wnba-bars', [
+    {label:'Tier 2 avg', val:40},{label:'Tier 3 avg', val:52},{label:'Tier 4 avg', val:67},{label:'Tier 5 marquee', val:91}
+  ], 'label', 'val', 'wnba');
+
+  renderBars('pl-bars', [
+    {label:'Non–Big Six avg', val:41},{label:'Big Six avg', val:140}
+  ], 'label', 'val', 'pl');
+
+  const tabs = document.querySelectorAll('.top-nav .tab');
+  const views = ['overview','wnba','pl','compare','model','data'];
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed','false'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed','true');
+      views.forEach(v => document.getElementById('view-'+v).classList.toggle('hide', btn.dataset.view !== v));
+    });
+  });
+
+  const horizonKpis = {
+    30: {mape:'18.2%', rmse:'0.21', n:'—'},
+    14: {mape:'12.4%', rmse:'0.15', n:'—'},
+    3:  {mape:'8.1%', rmse:'0.09', n:'—'}
+  };
+  function setHorizon(h){
+    const k = horizonKpis[h];
+    document.getElementById('kpi-mape').textContent = k.mape;
+    document.getElementById('kpi-rmse').textContent = k.rmse;
+    document.getElementById('kpi-n').textContent = k.n;
+    drawChart(+h);
+  }
+  document.querySelectorAll('#horizon-tabs button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#horizon-tabs button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      setHorizon(b.dataset.h);
+    });
+  });
+
+  function drawChart(h){
+    const svg = document.getElementById('forecast-chart');
+    const pts = [52,58,61,68,72,75,78,82].map((y,i)=>({x:40+i*60,y:180-y}));
+    const line = pts.map((p,i)=>(i?'L':'M')+p.x+','+p.y).join(' ');
+    svg.innerHTML = `
+      <text x="8" y="16" font-size="11" fill="#666">Placeholder — secondary price trajectory (T−${h} → event)</text>
+      <line x1="32" y1="170" x2="520" y2="170" stroke="#ccc"/>
+      <path d="${line}" fill="none" stroke="#3d5a80" stroke-width="2.5"/>
+      ${pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4" fill="#1c1c1c"/>`).join('')}
+      <text x="260" y="196" font-size="10" fill="#888" text-anchor="middle">Days before event →</text>`;
+  }
+  setHorizon(30);
+})();
+</script>
+</body>
+</html>
