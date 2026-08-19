@@ -17,14 +17,31 @@ import json
 import os
 import urllib.parse
 import urllib.request
-from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 API_BASE = "https://api.seatgeek.com/2"
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def _load_dotenv() -> None:
+    """Load .env from repo root if present (no extra dependency)."""
+    env_path = ROOT / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        val = val.strip().strip('"').strip("'")
+        os.environ.setdefault(key.strip(), val)
 
 
 def get_client_id() -> str | None:
-    return os.environ.get("SEATGEEK_CLIENT_ID") or os.environ.get("SEATGEEK_CLIENT_ID".lower())
+    _load_dotenv()
+    cid = os.environ.get("SEATGEEK_CLIENT_ID", "").strip()
+    return cid or None
 
 
 def _get(path: str, params: dict[str, Any]) -> dict | None:
@@ -112,7 +129,7 @@ def find_home_game(
     )
     if not candidates:
         candidates = search_events(
-            q=f"{home_team} {away_team}",
+            query=f"{home_team} {away_team}",
             date_gte=date_gte,
             date_lte=date_lte,
         )
@@ -131,7 +148,7 @@ if __name__ == "__main__":
     import sys
 
     q = sys.argv[1] if len(sys.argv) > 1 else "Portland Fire"
-    events = search_events(q=q, per_page=5)
+    events = search_events(query=q, per_page=5)
     print(f"Found {len(events)} events for q={q!r}")
     for ev in events[:3]:
         s = event_secondary_stats(ev)

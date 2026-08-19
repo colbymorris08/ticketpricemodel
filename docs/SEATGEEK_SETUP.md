@@ -23,10 +23,19 @@ cp .env.example .env
 # SEATGEEK_CLIENT_ID=your_client_id_here
 ```
 
-Test:
+Test (put your real client_id in `.env`, not the literal string `your_id_here`):
 
 ```bash
-export SEATGEEK_CLIENT_ID=your_client_id_here
+cd ~/ticketpricemodel
+cp .env.example .env
+# Edit .env: SEATGEEK_CLIENT_ID=paste_real_id_from_seatgeek.com/build
+python3 scripts/seatgeek_client.py "Portland Fire"
+```
+
+Or export for one session:
+
+```bash
+export SEATGEEK_CLIENT_ID=paste_real_id_here
 python3 scripts/seatgeek_client.py "Portland Fire"
 ```
 
