@@ -1,0 +1,20 @@
+fixture_id,date,kickoff,home,away,big_six_away,promoted_away,matchweek,venue,capacity
+cov-2627-h01,2026-08-29,15:00,Coventry City,Hull City,0,1,2,Coventry Building Society Arena,32609
+cov-2627-h02,2026-09-13,14:00,Coventry City,Brighton & Hove Albion,0,0,4,Coventry Building Society Arena,32609
+cov-2627-h03,2026-10-10,15:00,Coventry City,Newcastle United,0,0,8,Coventry Building Society Arena,32609
+cov-2627-h04,2026-10-24,15:00,Coventry City,Fulham,0,0,9,Coventry Building Society Arena,32609
+cov-2627-h05,2026-10-31,15:00,Coventry City,Sunderland,0,1,10,Coventry Building Society Arena,32609
+cov-2627-h06,2026-11-21,15:00,Coventry City,Crystal Palace,0,0,12,Coventry Building Society Arena,32609
+cov-2627-h07,2026-12-02,20:00,Coventry City,Ipswich Town,0,1,14,Coventry Building Society Arena,32609
+cov-2627-h08,2026-12-12,15:00,Coventry City,Aston Villa,0,0,15,Coventry Building Society Arena,32609
+cov-2627-h09,2026-12-26,15:00,Coventry City,Chelsea,1,0,17,Coventry Building Society Arena,32609
+cov-2627-h10,2026-12-30,20:00,Coventry City,Brentford,0,0,18,Coventry Building Society Arena,32609
+cov-2627-h11,2027-01-16,15:00,Coventry City,Everton,0,0,21,Coventry Building Society Arena,32609
+cov-2627-h12,2027-01-30,15:00,Coventry City,Leeds United,0,0,23,Coventry Building Society Arena,32609
+cov-2627-h13,2027-02-10,20:00,Coventry City,Liverpool,1,0,24,Coventry Building Society Arena,32609
+cov-2627-h14,2027-02-27,15:00,Coventry City,Bournemouth,0,0,26,Coventry Building Society Arena,32609
+cov-2627-h15,2027-03-13,15:00,Coventry City,Manchester City,1,0,28,Coventry Building Society Arena,32609
+cov-2627-h16,2027-04-10,15:00,Coventry City,Arsenal,1,0,32,Coventry Building Society Arena,32609
+cov-2627-h17,2027-05-01,15:00,Coventry City,Manchester United,1,0,35,Coventry Building Society Arena,32609
+cov-2627-h18,2027-05-15,15:00,Coventry City,Tottenham Hotspur,1,0,37,Coventry Building Society Arena,32609
+cov-2627-h19,2027-05-30,16:00,Coventry City,Nottingham Forest,0,0,38,Coventry Building Society Arena,32609

@@ -1,0 +1,44 @@
+name: Daily price snapshot
+
+on:
+  schedule:
+    # 12:00 UTC daily (~5am PT / 1pm UK in summer)
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run snapshot + model
+        env:
+          SEATGEEK_CLIENT_ID: ${{ secrets.SEATGEEK_CLIENT_ID }}
+        run: |
+          AS_OF=$(date -u +%Y-%m-%d)
+          echo "Running sprint as-of $AS_OF"
+          python scripts/run_sprint.py --as-of "$AS_OF"
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/ data/raw/secondary_snapshots/ || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Daily snapshot $(date -u +%Y-%m-%d)"
+            git push
+          fi

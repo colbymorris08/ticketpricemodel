@@ -1,0 +1,23 @@
+fixture_id,date,tipoff,home,away,opponent_tier,is_weekend,game_number,venue,capacity,season_phase
+por-26-h01,2026-05-09,18:00,Portland Fire,Chicago Sky,3,1,1,Moda Center,19393,completed
+por-26-h02,2026-05-12,19:00,Portland Fire,New York Liberty,5,0,2,Moda Center,19393,completed
+por-26-h03,2026-05-14,19:00,Portland Fire,New York Liberty,5,0,3,Moda Center,19393,completed
+por-26-h04,2026-05-18,19:00,Portland Fire,Connecticut Sun,2,0,4,Moda Center,19393,completed
+por-26-h05,2026-05-27,19:00,Portland Fire,Connecticut Sun,2,0,5,Moda Center,19393,completed
+por-26-h06,2026-05-29,19:00,Portland Fire,Atlanta Dream,2,0,6,Moda Center,19393,completed
+por-26-h07,2026-05-30,19:00,Portland Fire,Indiana Fever,4,1,7,Moda Center,19393,completed
+por-26-h08,2026-06-05,19:00,Portland Fire,Phoenix Mercury,3,0,8,Moda Center,19393,completed
+por-26-h09,2026-06-11,19:00,Portland Fire,Las Vegas Aces,5,0,9,Moda Center,19393,completed
+por-26-h10,2026-06-13,19:00,Portland Fire,Dallas Wings,2,1,10,Moda Center,19393,completed
+por-26-h11,2026-06-17,19:00,Portland Fire,Seattle Storm,4,0,11,Moda Center,19393,completed
+por-26-h12,2026-07-09,19:00,Portland Fire,Las Vegas Aces,5,0,12,Moda Center,19393,completed
+por-26-h13,2026-07-22,19:00,Portland Fire,Dallas Wings,2,0,13,Moda Center,19393,completed
+por-26-h14,2026-07-31,19:00,Portland Fire,Indiana Fever,4,0,14,Moda Center,19393,completed
+por-26-h15,2026-08-02,12:30,Portland Fire,Los Angeles Sparks,3,1,15,Moda Center,19393,completed
+por-26-h16,2026-08-06,19:00,Portland Fire,Toronto Tempo,3,0,16,Moda Center,19393,upcoming
+por-26-h17,2026-08-08,17:30,Portland Fire,Seattle Storm,4,1,17,Moda Center,19393,upcoming
+por-26-h18,2026-08-12,19:00,Portland Fire,Minnesota Lynx,4,0,18,Moda Center,19393,upcoming
+por-26-h19,2026-08-23,16:00,Portland Fire,Washington Mystics,2,1,19,Moda Center,19393,upcoming
+por-26-h20,2026-08-30,16:00,Portland Fire,Golden State Valkyries,4,1,20,Moda Center,19393,upcoming
+por-26-h21,2026-09-17,22:00,Portland Fire,Phoenix Mercury,3,0,21,Moda Center,19393,upcoming
+por-26-h22,2026-09-22,22:00,Portland Fire,Golden State Valkyries,4,0,22,Moda Center,19393,upcoming

@@ -1,0 +1,16 @@
+fixture_id,observed_get_in_usd,listing_count_est,obs_source,snapshot_date
+por-26-h01,45,120,cbs_ticketmaster_proxy,2026-05-08
+por-26-h02,52,85,cbs_ticketmaster_proxy,2026-05-11
+por-26-h03,58,72,cbs_ticketmaster_proxy,2026-05-13
+por-26-h04,32,95,cbs_ticketmaster_proxy,2026-05-17
+por-26-h05,34,88,cbs_ticketmaster_proxy,2026-05-26
+por-26-h06,36,90,cbs_ticketmaster_proxy,2026-05-28
+por-26-h07,48,110,cbs_ticketmaster_proxy,2026-05-29
+por-26-h08,38,78,cbs_ticketmaster_proxy,2026-06-04
+por-26-h09,72,45,cbs_ticketmaster_proxy,2026-06-10
+por-26-h10,35,82,cbs_ticketmaster_proxy,2026-06-12
+por-26-h11,55,60,cbs_ticketmaster_proxy,2026-06-16
+por-26-h12,68,52,cbs_ticketmaster_proxy,2026-07-08
+por-26-h13,33,75,cbs_ticketmaster_proxy,2026-07-21
+por-26-h14,46,70,cbs_ticketmaster_proxy,2026-07-30
+por-26-h15,40,80,cbs_ticketmaster_proxy,2026-08-01

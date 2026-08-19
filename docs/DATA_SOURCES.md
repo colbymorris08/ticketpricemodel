@@ -26,7 +26,7 @@ We forecast **secondary price level** (and optionally volume) at three horizons 
 | Source | Data | Access |
 |--------|------|--------|
 | **WNBA schedule API / site** | Date, opponent, home/away, arena, tip time | [stats.wnba.com](https://stats.wnba.com), [wnba.com/schedule](https://www.wnba.com/schedule) — no public API; scrape or manual CSV |
-| **Secondary market listings** | Price, section, quantity, timestamp | **SeatGeek** (partner API for affiliates), **StubHub**, **Ticketmaster resale** — affiliate/API or scheduled scrape |
+| **Secondary market listings** | Price, section, quantity, timestamp | **SeatGeek API** (`stats.lowest_price` — see [`docs/SEATGEEK_SETUP.md`](SEATGEEK_SETUP.md)), StubHub, Ticketmaster resale |
 | **Team metadata** | Expansion flag, arena name, capacity, market size | Wikipedia / league press releases / [Basketball Reference](https://www.basketball-reference.com/wnba/) |
 | **Opponent tier** | “Marquee” flag (e.g. Aces, Liberty, Storm) | Rule-based from prior-season record / star index |
 

@@ -3,9 +3,12 @@ __pycache__/
 *.pyc
 .env
 .env.*
-*.csv
-data/raw/
+!/.env.example
 data/processed/
-results/
 notebooks/.ipynb_checkpoints/
 ~$*
+
+# Raw data gitignored except committed snapshot history
+data/raw/**
+!data/raw/secondary_snapshots/
+!data/raw/secondary_snapshots/**

@@ -1,0 +1,13 @@
+fixture_id,primary_band_gbp,primary_band_usd,source,notes
+cov-2627-h01,45,,"coventry_est","PL category mid — first home back"
+cov-2627-h02,45,,"coventry_est","standard home"
+cov-2627-h03,48,,"coventry_est","Newcastle travel demand"
+cov-2627-h13,55,,"coventry_est","Liverpool — premium primary band est"
+cov-2627-h15,55,,"coventry_est","Man City"
+cov-2627-h16,55,,"coventry_est","Arsenal"
+por-26-h01,,28,ticketmaster_est,"home opener face value est"
+por-26-h02,,35,ticketmaster_est,"Liberty premium"
+por-26-h09,,38,ticketmaster_est,"Aces"
+por-26-h16,,32,ticketmaster_est,"Toronto expansion derby"
+por-26-h19,,28,ticketmaster_est,"Mystics standard"
+por-26-h20,,30,ticketmaster_est,"Valkyries"
