@@ -1,24 +1,23 @@
 track,fixture,date,days_out,horizon_days,pred_secondary,pred_t30,pred_t14,pred_t3,primary_band,gap,live_secondary,action,big_six_away,opponent_tier
-pl_coventry,Coventry City vs Hull City,2026-08-29,6,3,114.0,86.94,86.94,82.08,45.0,69.0,114.0,HOLD,0.0,
-pl_coventry,Coventry City vs Brighton & Hove Albion,2026-09-13,21,14,120.0,74.79,76.14,82.08,45.0,75.0,120.0,HOLD,0.0,
-pl_coventry,Coventry City vs Newcastle United,2026-10-10,48,30,240.0,67.5,76.14,82.08,48.0,192.0,240.0,HOLD,0.0,
-pl_coventry,Coventry City vs Fulham,2026-10-24,62,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Sunderland,2026-10-31,69,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Crystal Palace,2026-11-21,90,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Ipswich Town,2026-12-02,101,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Aston Villa,2026-12-12,111,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Chelsea,2026-12-26,125,30,95.0,95.0,107.16,115.52,45.0,50.0,,HOLD,1.0,
-pl_coventry,Coventry City vs Brentford,2026-12-30,129,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Everton,2027-01-16,146,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Leeds United,2027-01-30,160,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Liverpool,2027-02-10,171,30,95.0,95.0,107.16,115.52,55.0,40.0,,HOLD,1.0,
-pl_coventry,Coventry City vs Bournemouth,2027-02-27,188,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-pl_coventry,Coventry City vs Manchester City,2027-03-13,202,30,95.0,95.0,107.16,115.52,55.0,40.0,,HOLD,1.0,
-pl_coventry,Coventry City vs Arsenal,2027-04-10,230,30,95.0,95.0,107.16,115.52,55.0,40.0,,HOLD,1.0,
-pl_coventry,Coventry City vs Manchester United,2027-05-01,251,30,95.0,95.0,107.16,115.52,45.0,50.0,,HOLD,1.0,
-pl_coventry,Coventry City vs Tottenham Hotspur,2027-05-15,265,30,95.0,95.0,107.16,115.52,45.0,50.0,,HOLD,1.0,
-pl_coventry,Coventry City vs Nottingham Forest,2027-05-30,280,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
-wnba_portland,Portland Fire vs Washington Mystics,2026-08-23,0,3,62.74,62.74,62.74,62.74,28.0,34.74,,HOLD,,2.0
-wnba_portland,Portland Fire vs Golden State Valkyries,2026-08-30,7,3,56.1,58.87,58.87,56.1,30.0,26.1,,HOLD,,4.0
-wnba_portland,Portland Fire vs Phoenix Mercury,2026-09-17,25,30,48.9,48.9,52.04,56.1,28.0,20.9,,HOLD,,3.0
-wnba_portland,Portland Fire vs Golden State Valkyries,2026-09-22,30,30,46.13,46.13,52.04,56.1,28.0,18.13,,HOLD,,4.0
+pl_coventry,Coventry City vs Hull City,2026-08-29,5,3,114.0,87.75,87.75,82.08,45.0,69.0,114.0,HOLD,0.0,
+pl_coventry,Coventry City vs Brighton & Hove Albion,2026-09-13,20,14,120.0,75.6,76.14,82.08,45.0,75.0,120.0,HOLD,0.0,
+pl_coventry,Coventry City vs Newcastle United,2026-10-10,47,30,240.0,67.5,76.14,82.08,48.0,192.0,240.0,HOLD,0.0,
+pl_coventry,Coventry City vs Fulham,2026-10-24,61,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Sunderland,2026-10-31,68,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Crystal Palace,2026-11-21,89,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Ipswich Town,2026-12-02,100,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Aston Villa,2026-12-12,110,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Chelsea,2026-12-26,124,30,95.0,95.0,107.16,115.52,45.0,50.0,,HOLD,1.0,
+pl_coventry,Coventry City vs Brentford,2026-12-30,128,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Everton,2027-01-16,145,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Leeds United,2027-01-30,159,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Liverpool,2027-02-10,170,30,95.0,95.0,107.16,115.52,55.0,40.0,,HOLD,1.0,
+pl_coventry,Coventry City vs Bournemouth,2027-02-27,187,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+pl_coventry,Coventry City vs Manchester City,2027-03-13,201,30,95.0,95.0,107.16,115.52,55.0,40.0,,HOLD,1.0,
+pl_coventry,Coventry City vs Arsenal,2027-04-10,229,30,95.0,95.0,107.16,115.52,55.0,40.0,,HOLD,1.0,
+pl_coventry,Coventry City vs Manchester United,2027-05-01,250,30,95.0,95.0,107.16,115.52,45.0,50.0,,HOLD,1.0,
+pl_coventry,Coventry City vs Tottenham Hotspur,2027-05-15,264,30,95.0,95.0,107.16,115.52,45.0,50.0,,HOLD,1.0,
+pl_coventry,Coventry City vs Nottingham Forest,2027-05-30,279,30,67.5,67.5,76.14,82.08,45.0,22.5,,HOLD,0.0,
+wnba_portland,Portland Fire vs Golden State Valkyries,2026-08-30,6,3,56.1,59.42,59.42,56.1,30.0,26.1,,HOLD,,4.0
+wnba_portland,Portland Fire vs Phoenix Mercury,2026-09-17,24,30,49.45,49.45,52.04,56.1,28.0,21.45,,HOLD,,3.0
+wnba_portland,Portland Fire vs Golden State Valkyries,2026-09-22,29,30,46.69,46.69,52.04,56.1,28.0,18.69,,HOLD,,4.0
