@@ -48,7 +48,9 @@ cp .env.example .env   # add SEATGEEK_CLIENT_ID for WNBA
 python scripts/run_sprint.py --as-of 2026-08-18
 ```
 
-**SeatGeek:** free `client_id` at [seatgeek.com/build](https://seatgeek.com/build) → see [`docs/SEATGEEK_SETUP.md`](docs/SEATGEEK_SETUP.md).
+**SeatGeek:** optional if approved — see [`docs/SEATGEEK_SETUP.md`](docs/SEATGEEK_SETUP.md).
+
+**StubHub scrape:** primary secondary source — see [`docs/STUBHUB_SCRAPING.md`](docs/STUBHUB_SCRAPING.md). US track needs `playwright install chromium`.
 
 **Daily auto-snapshot:** GitHub Action runs at 12:00 UTC once you add `SEATGEEK_CLIENT_ID` as a repo secret.
 

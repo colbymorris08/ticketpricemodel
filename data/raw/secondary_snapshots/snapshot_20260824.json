@@ -1,5 +1,6 @@
 [
   {
+<<<<<<< HEAD
     "secondary_get_in":114.0,
     "listing_count_est":60,
     "obs_source":"stubhub_uk_live",
@@ -40,12 +41,52 @@
     "track":"pl_coventry",
     "horizon_days":47,
     "days_out":null
+=======
+    "secondary_get_in":61.5,
+    "listing_count_est":28,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-08-24",
+    "fixture_date":"2026-08-29",
+    "home":"Coventry City",
+    "away":"Hull City",
+    "days_out":5,
+    "fixture_id":"cov-2627-h01",
+    "track":"pl_coventry",
+    "horizon_days":5
+  },
+  {
+    "secondary_get_in":42.0,
+    "listing_count_est":55,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-08-24",
+    "fixture_date":"2026-09-13",
+    "home":"Coventry City",
+    "away":"Brighton & Hove Albion",
+    "days_out":20,
+    "fixture_id":"cov-2627-h02",
+    "track":"pl_coventry",
+    "horizon_days":20
+  },
+  {
+    "secondary_get_in":42.0,
+    "listing_count_est":55,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-08-24",
+    "fixture_date":"2026-10-10",
+    "home":"Coventry City",
+    "away":"Newcastle United",
+    "days_out":47,
+    "fixture_id":"cov-2627-h03",
+    "track":"pl_coventry",
+    "horizon_days":47
+>>>>>>> a30477a (Add StubHub scraper for UK and US secondary prices.)
   },
   {
     "secondary_get_in":56.16,
     "listing_count_est":42,
     "obs_source":"wnba_tier_prior",
     "snapshot_date":"2026-08-24",
+<<<<<<< HEAD
     "search_url":null,
     "fixture_date":"2026-08-30",
     "home":"Portland Fire",
@@ -54,12 +95,22 @@
     "track":"wnba_portland",
     "horizon_days":6,
     "days_out":6.0
+=======
+    "fixture_date":"2026-08-30",
+    "home":"Portland Fire",
+    "away":"Golden State Valkyries",
+    "days_out":6,
+    "fixture_id":"por-26-h20",
+    "track":"wnba_portland",
+    "horizon_days":6
+>>>>>>> a30477a (Add StubHub scraper for UK and US secondary prices.)
   },
   {
     "secondary_get_in":40.0,
     "listing_count_est":54,
     "obs_source":"wnba_tier_prior",
     "snapshot_date":"2026-08-24",
+<<<<<<< HEAD
     "search_url":null,
     "fixture_date":"2026-09-17",
     "home":"Portland Fire",
@@ -68,12 +119,22 @@
     "track":"wnba_portland",
     "horizon_days":24,
     "days_out":24.0
+=======
+    "fixture_date":"2026-09-17",
+    "home":"Portland Fire",
+    "away":"Phoenix Mercury",
+    "days_out":24,
+    "fixture_id":"por-26-h21",
+    "track":"wnba_portland",
+    "horizon_days":24
+>>>>>>> a30477a (Add StubHub scraper for UK and US secondary prices.)
   },
   {
     "secondary_get_in":52.0,
     "listing_count_est":42,
     "obs_source":"wnba_tier_prior",
     "snapshot_date":"2026-08-24",
+<<<<<<< HEAD
     "search_url":null,
     "fixture_date":"2026-09-22",
     "home":"Portland Fire",
@@ -82,5 +143,14 @@
     "track":"wnba_portland",
     "horizon_days":29,
     "days_out":29.0
+=======
+    "fixture_date":"2026-09-22",
+    "home":"Portland Fire",
+    "away":"Golden State Valkyries",
+    "days_out":29,
+    "fixture_id":"por-26-h22",
+    "track":"wnba_portland",
+    "horizon_days":29
+>>>>>>> a30477a (Add StubHub scraper for UK and US secondary prices.)
   }
 ]
