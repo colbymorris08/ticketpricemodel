@@ -371,21 +371,21 @@ def main() -> None:
         "capture_rate": CAPTURE_RATE,
         "as_of": as_of.isoformat(),
         "method": {
-            "competition": "EFL League Two only — no Premier League projection",
-            "historical": "2025-26 League Two home attendances (observed)",
+            "competition": "EFL League Two only — England’s 4th division, not the Premier League",
+            "historical": "Last season’s home games with published crowd sizes",
             "sales_data": (
-                "Primary from Gillingham club published adult bands (£22–£25). "
-                "League Two comps in data/reference/league_two_ticket_sales_seed.csv. "
-                "StubHub UK almost never lists L2 get-ins — secondary uses L2 sales priors, not PL resale."
+                "Ticket prices from Gillingham’s published adult home prices (about £22–£25), "
+                "checked against other League Two clubs’ published prices. "
+                "StubHub almost never lists League Two tickets, so we do not use Premier League resale prices."
             ),
-            "projections_from": "Own-history fill model + club/L2 sales priors for WTP",
-            "promotion_jump": "Not applicable — Gillingham are League Two",
-            "concessions": f"£{CONC_PER_HEAD}/head League Two F&B placeholder",
-            "optimization": "PRICE_CAPTURE when relatively full & WTP≫face; PROMO_TARGET on soft gates",
-            "confidence": "Per-game 0–100 from observed vs model, tier, days-out",
+            "projections_from": "Crowd forecast from Gillingham’s own recent home crowds against similar opponents",
+            "promotion_jump": "Not used — Gillingham are already in League Two",
+            "concessions": f"Food and beverage assumed at £{CONC_PER_HEAD} per fan in the ground",
+            "optimization": "Nudge prices up on busy games; targeted promo on quiet games",
+            "confidence": "Higher for games already played; lower for quiet games far in the future",
             "played_status": (
                 f"As of {as_of.isoformat()}: {model_meta['n_homes_played']} of "
-                f"{model_meta['n_homes_total']} League Two homes played/logged."
+                f"{model_meta['n_homes_total']} League Two home games played."
             ),
         },
         "model": model_meta,
