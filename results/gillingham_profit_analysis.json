@@ -8,10 +8,11 @@
   "method": {
     "competition": "EFL League Two only \u2014 England\u2019s 4th division, not the Premier League",
     "historical": "Last season\u2019s home games with published crowd sizes",
-    "sales_data": "Ticket prices from Gillingham\u2019s published adult home prices (about \u00a322\u2013\u00a325), checked against other League Two clubs\u2019 published prices. StubHub almost never lists League Two tickets, so we do not use Premier League resale prices.",
+    "sales_data": "Ticket prices are not observed game by game \u2014 they are derived from Gillingham\u2019s published adult price band (about \u00a322\u2013\u00a325), stepped by opponent draw and checked against other League Two clubs\u2019 published prices. StubHub almost never lists League Two tickets, so we do not use Premier League resale prices; \u201cwhat fans will pay\u201d is derived from the same club band.",
     "projections_from": "Crowd forecast from Gillingham\u2019s own recent home crowds against similar opponents",
     "promotion_jump": "Not used \u2014 Gillingham are already in League Two",
-    "concessions": "Food and beverage assumed at \u00a36.0 per fan in the ground",
+    "concessions": "Food and beverage assumed at \u00a36.0 per fan in the ground (assumption, not club data)",
+    "additional_data_needed": "Actual food and beverage prices and per-head spend; league-wide League Two pricing across all 24 clubs; and repeat-purchase / season-ticket renewal data to measure fan stickiness \u2014 how far prices can rise before the crowd stops turning up. Without the stickiness data, the price-increase upside shown here is an upper bound.",
     "optimization": "Nudge prices up on busy games; targeted promo on quiet games",
     "confidence": "Higher for games already played; lower for quiet games far in the future",
     "played_status": "As of 2026-08-26: 1 of 23 League Two home games played."

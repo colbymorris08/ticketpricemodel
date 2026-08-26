@@ -374,13 +374,21 @@ def main() -> None:
             "competition": "EFL League Two only — England’s 4th division, not the Premier League",
             "historical": "Last season’s home games with published crowd sizes",
             "sales_data": (
-                "Ticket prices from Gillingham’s published adult home prices (about £22–£25), "
-                "checked against other League Two clubs’ published prices. "
-                "StubHub almost never lists League Two tickets, so we do not use Premier League resale prices."
+                "Ticket prices are not observed game by game — they are derived from Gillingham’s "
+                "published adult price band (about £22–£25), stepped by opponent draw and checked "
+                "against other League Two clubs’ published prices. StubHub almost never lists "
+                "League Two tickets, so we do not use Premier League resale prices; “what fans will "
+                "pay” is derived from the same club band."
             ),
             "projections_from": "Crowd forecast from Gillingham’s own recent home crowds against similar opponents",
             "promotion_jump": "Not used — Gillingham are already in League Two",
-            "concessions": f"Food and beverage assumed at £{CONC_PER_HEAD} per fan in the ground",
+            "concessions": f"Food and beverage assumed at £{CONC_PER_HEAD} per fan in the ground (assumption, not club data)",
+            "additional_data_needed": (
+                "Actual food and beverage prices and per-head spend; league-wide League Two pricing "
+                "across all 24 clubs; and repeat-purchase / season-ticket renewal data to measure fan "
+                "stickiness — how far prices can rise before the crowd stops turning up. Without the "
+                "stickiness data, the price-increase upside shown here is an upper bound."
+            ),
             "optimization": "Nudge prices up on busy games; targeted promo on quiet games",
             "confidence": "Higher for games already played; lower for quiet games far in the future",
             "played_status": (
