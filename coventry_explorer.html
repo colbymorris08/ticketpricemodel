@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Coventry City Ticket Demand — CBS Arena Explorer</title>
+<style>
+  :root{
+    --ink:#12141a; --muted:#5a6170; --line:#d8dde6; --bg:#f3f5f8;
+    --sky:#1a4f8a; --hold:#b45309; --hold-bg:#fff7ed; --hold-bd:#fdba74;
+    --promo:#1d6b4f; --promo-bg:#ecfdf5; --promo-bd:#6ee7b7;
+    --fair:#3d5a80; --fair-bg:#eef3f8; --fair-bd:#9eb6d4;
+    --pitch:#2d6a4f; --seat-empty:#e8ecf2; --seat-fill:#1a4f8a;
+    --opt:#0f766e; --opt-fill:#14b8a6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 56px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(26px,4vw,34px);letter-spacing:-.02em}
+  h2{font-family:Georgia,serif;font-size:20px;margin:28px 0 10px}
+  .sub{color:var(--muted);font-size:15px;max-width:720px;margin-top:8px}
+  .banner{margin:16px 0;padding:12px 14px;background:#eef3f8;border:1px solid var(--line);border-radius:8px;font-size:13px;color:#334}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 6px}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid}
+  .pill.hold{background:var(--hold-bg);border-color:var(--hold-bd);color:var(--hold)}
+  .pill.fair{background:var(--fair-bg);border-color:var(--fair-bd);color:var(--fair)}
+  .pill.promo{background:var(--promo-bg);border-color:var(--promo-bd);color:var(--promo)}
+  .dot{width:8px;height:8px;border-radius:50%}
+  .dot.hold{background:var(--hold)}.dot.fair{background:var(--fair)}.dot.promo{background:var(--promo)}
+
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:16px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 1px 2px rgba(18,20,26,.04)}
+  .card h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--ink);padding:8px 9px}
+  td{padding:9px;border-bottom:1px solid #eceff4;vertical-align:middle}
+  tr:hover td{background:#fafbfd}
+  tr.active td{background:#fff7ed}
+  .tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;display:inline-block}
+  .tag.hold{background:var(--hold-bg);color:var(--hold);border:1px solid var(--hold-bd)}
+  .tag.fair{background:var(--fair-bg);color:var(--fair);border:1px solid var(--fair-bd)}
+  .tag.promo{background:var(--promo-bg);color:var(--promo);border:1px solid var(--promo-bd)}
+  .mono{font-variant-numeric:tabular-nums}
+  .muted{color:var(--muted);font-size:12px}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:700px){.compare{grid-template-columns:1fr}}
+  .panel{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fafbfc}
+  .panel.current{border-top:3px solid var(--sky)}
+  .panel.opt{border-top:3px solid var(--opt)}
+  .panel h4{font-size:14px;margin-bottom:4px}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+  .kpi .v{font-family:Georgia,serif;font-size:22px;font-weight:700}
+  .kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:2px}
+  .delta{font-size:13px;font-weight:700;color:var(--opt);margin-top:8px}
+
+  /* SVG stadium */
+  .stad{width:100%;max-width:360px;margin:8px auto 0;display:block}
+  .stad .empty{fill:var(--seat-empty)}
+  .stad .filled{fill:var(--seat-fill)}
+  .stad .filled-opt{fill:var(--opt-fill)}
+  .stad .pitch{fill:var(--pitch)}
+  .stad text{font-size:9px;fill:#445;font-family:system-ui,sans-serif}
+  .stad .cap-label{font-size:11px;font-weight:700;fill:var(--ink)}
+
+  .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+  .foot a{color:var(--sky)}
+  button.rowbtn{all:unset;cursor:pointer;display:contents}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Coventry City · Ticket Demand Explorer</h1>
+    <p class="sub">2026–27 Premier League return at the Coventry Building Society Arena. Secondary market get-in prices vs club face value — and what an optimized pricing strategy could look like on the same night.</p>
+  </header>
+
+  <div class="banner">
+    <strong>Snapshot:</strong> 25 Aug 2026 · Live StubHub UK for next 3 homes · Capacity <strong>32,609</strong> · Model: secondary get-in − primary band → pricing action.
+    Illustrative attendance &amp; revenue for the selected fixture (not club ledger data).
+  </div>
+
+  <div class="legend">
+    <span class="pill hold"><span class="dot hold"></span> Undervalued face value — HOLD (no promo; raise bands)</span>
+    <span class="pill fair"><span class="dot fair"></span> Fair / monitor</span>
+    <span class="pill promo"><span class="dot promo"></span> Soft demand — PROMOTE</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Home fixtures · secondary vs primary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th><th>Opponent</th><th>Secondary</th><th>Primary</th><th>Gap</th><th>Call</th>
+          </tr>
+        </thead>
+        <tbody id="fixture-rows"></tbody>
+      </table>
+      <p class="muted" style="margin-top:10px">Click a row to update the stadium view. Live = StubHub UK scrape. Model = forecast from promoted-club priors.</p>
+    </div>
+
+    <div class="card">
+      <h3>CBS Arena · seating layout</h3>
+      <svg class="stad" viewBox="0 0 320 280" aria-label="CBS Arena bowl map">
+        <!-- West (left, two-tier premium) -->
+        <rect id="w-empty" class="empty" x="18" y="50" width="42" height="180" rx="6"/>
+        <rect id="w-fill" x="18" y="50" width="42" height="0" rx="6"/>
+        <!-- East -->
+        <rect id="e-empty" class="empty" x="260" y="50" width="42" height="180" rx="6"/>
+        <rect id="e-fill" x="260" y="50" width="42" height="0" rx="6"/>
+        <!-- North -->
+        <rect id="n-empty" class="empty" x="68" y="18" width="184" height="36" rx="6"/>
+        <rect id="n-fill" x="68" y="18" width="184" height="0" rx="6"/>
+        <!-- South (away end left portion) -->
+        <rect id="s-empty" class="empty" x="68" y="226" width="184" height="36" rx="6"/>
+        <rect id="s-fill" x="68" y="226" width="184" height="0" rx="6"/>
+        <!-- Pitch -->
+        <rect class="pitch" x="72" y="64" width="176" height="152" rx="4"/>
+        <rect x="148" y="126" width="24" height="28" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"/>
+        <circle cx="160" cy="140" r="18" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/>
+        <text x="28" y="145" transform="rotate(-90 28 145)">West · premium</text>
+        <text x="292" y="145" transform="rotate(90 292 145)">East</text>
+        <text x="160" y="40" text-anchor="middle">North · family</text>
+        <text x="160" y="250" text-anchor="middle">South · away / singers</text>
+        <text id="stad-cap" class="cap-label" x="160" y="144" text-anchor="middle">—</text>
+      </svg>
+      <p class="muted" style="text-align:center;margin-top:6px">Bowl schematic (32,609). Fill = estimated attendance for selected game.</p>
+    </div>
+  </div>
+
+  <h2 id="match-title">Select a fixture</h2>
+  <p class="sub" id="match-sub">Current primary pricing vs secondary willingness to pay — side by side.</p>
+
+  <div class="compare" id="compare">
+    <div class="panel current">
+      <h4>Tonight · current primary strategy</h4>
+      <p class="muted" id="cur-blurb">Face-value bands as published / estimated.</p>
+      <div class="kpis">
+        <div class="kpi"><div class="v mono" id="cur-price">—</div><div class="l">Avg primary £</div></div>
+        <div class="kpi"><div class="v mono" id="cur-fill">—</div><div class="l">Est. fill %</div></div>
+        <div class="kpi"><div class="v mono" id="cur-crowd">—</div><div class="l">Est. attendance</div></div>
+        <div class="kpi"><div class="v mono" id="cur-rev">—</div><div class="l">Est. gate £</div></div>
+      </div>
+      <svg class="stad" viewBox="0 0 320 200" aria-hidden="true">
+        <rect class="empty" x="30" y="30" width="260" height="140" rx="10"/>
+        <rect id="bar-cur" class="filled" x="30" y="30" width="0" height="140" rx="10"/>
+        <text x="160" y="108" text-anchor="middle" class="cap-label" id="bar-cur-lbl">people in seats</text>
+      </svg>
+    </div>
+    <div class="panel opt">
+      <h4>Optimized · capture secondary gap</h4>
+      <p class="muted" id="opt-blurb">Raise primary toward secondary demand; keep fill high on hot games.</p>
+      <div class="kpis">
+        <div class="kpi"><div class="v mono" id="opt-price">—</div><div class="l">Target primary £</div></div>
+        <div class="kpi"><div class="v mono" id="opt-fill">—</div><div class="l">Est. fill %</div></div>
+        <div class="kpi"><div class="v mono" id="opt-crowd">—</div><div class="l">Est. attendance</div></div>
+        <div class="kpi"><div class="v mono" id="opt-rev">—</div><div class="l">Est. gate £</div></div>
+      </div>
+      <svg class="stad" viewBox="0 0 320 200" aria-hidden="true">
+        <rect class="empty" x="30" y="30" width="260" height="140" rx="10"/>
+        <rect id="bar-opt" class="filled-opt" x="30" y="30" width="0" height="140" rx="10"/>
+        <text x="160" y="108" text-anchor="middle" class="cap-label" id="bar-opt-lbl">people + profit</text>
+      </svg>
+      <p class="delta" id="delta-line"></p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>How to read this</h3>
+    <ul style="margin:8px 0 0 18px;font-size:13px;color:#444">
+      <li><strong>Undervalued</strong> — secondary get-in is well above club face value. Fans are paying more on StubHub than the club charges. Action: <strong>HOLD</strong> inventory, raise category bands, package premium.</li>
+      <li><strong>Soft demand</strong> — secondary near or below face value with weak listings. Action: <strong>PROMOTE</strong> (targeted offers), don’t blanket-discount hot games.</li>
+      <li><strong>Optimized revenue</strong> — illustrative: lift average primary toward ~60–70% of observed secondary on HOLD games while keeping fill ≥ current. Not a club invoice.</li>
+    </ul>
+  </div>
+
+  <footer class="foot">
+    Coventry Building Society Arena · capacity 32,609 (football).
+    Data: StubHub UK secondary snapshots + estimated primary bands.
+    Full project: <a href="https://github.com/colbymorris08/ticketpricemodel">github.com/colbymorris08/ticketpricemodel</a>
+    · Live page: <a href="https://colbymorris08.github.io/ticketpricemodel/coventry_explorer.html">colbymorris08.github.io/ticketpricemodel/coventry_explorer.html</a>
+  </footer>
+</div>
+
+<script>
+const CAP = 32609;
+const FIXTURES = [
+  {id:'h01', date:'2026-08-29', opp:'Hull City', secondary:114, primary:45, live:true, bigSix:false},
+  {id:'h02', date:'2026-09-13', opp:'Brighton & Hove Albion', secondary:133, primary:45, live:true, bigSix:false},
+  {id:'h03', date:'2026-10-10', opp:'Newcastle United', secondary:240, primary:48, live:true, bigSix:false},
+  {id:'h04', date:'2026-10-24', opp:'Fulham', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h05', date:'2026-10-31', opp:'Sunderland', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h06', date:'2026-11-21', opp:'Crystal Palace', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h07', date:'2026-12-02', opp:'Ipswich Town', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h08', date:'2026-12-12', opp:'Aston Villa', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h09', date:'2026-12-26', opp:'Chelsea', secondary:95, primary:45, live:false, bigSix:true},
+  {id:'h10', date:'2026-12-30', opp:'Brentford', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h11', date:'2027-01-16', opp:'Everton', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h12', date:'2027-01-30', opp:'Leeds United', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h13', date:'2027-02-10', opp:'Liverpool', secondary:95, primary:55, live:false, bigSix:true},
+  {id:'h14', date:'2027-02-27', opp:'Bournemouth', secondary:67.5, primary:45, live:false, bigSix:false},
+  {id:'h15', date:'2027-03-13', opp:'Manchester City', secondary:95, primary:55, live:false, bigSix:true},
+  {id:'h16', date:'2027-04-10', opp:'Arsenal', secondary:95, primary:55, live:false, bigSix:true},
+  {id:'h17', date:'2027-05-01', opp:'Manchester United', secondary:95, primary:45, live:false, bigSix:true},
+  {id:'h18', date:'2027-05-15', opp:'Tottenham Hotspur', secondary:95, primary:45, live:false, bigSix:true},
+  {id:'h19', date:'2027-05-30', opp:'Nottingham Forest', secondary:67.5, primary:45, live:false, bigSix:false},
+];
+
+function classify(f) {
+  const ratio = f.secondary / Math.max(f.primary, 1);
+  if (ratio >= 1.35) return 'hold';      // undervalued face value
+  if (ratio < 1.05) return 'promo';      // soft / overpriced relative to demand
+  return 'fair';
+}
+
+function label(cls) {
+  if (cls === 'hold') return 'Undervalued';
+  if (cls === 'promo') return 'Soft demand';
+  return 'Fair';
+}
+
+function estimate(f) {
+  const cls = classify(f);
+  // Current: hot games nearly full; softer games lower fill
+  let curFill = 0.82;
+  if (cls === 'hold') curFill = f.live ? 0.96 : 0.90;
+  if (cls === 'promo') curFill = 0.72;
+  if (f.bigSix) curFill = Math.max(curFill, 0.94);
+
+  const curPrice = f.primary;
+  const curCrowd = Math.round(CAP * curFill);
+  const curRev = Math.round(curCrowd * curPrice);
+
+  // Optimized: capture part of secondary gap on HOLD; nudge promo games with slight price cut + fill lift
+  let optPrice = curPrice;
+  let optFill = curFill;
+  if (cls === 'hold') {
+    optPrice = Math.round(Math.min(f.secondary * 0.62, f.primary * 1.85));
+    optFill = Math.min(0.985, curFill + 0.01); // keep nearly full
+  } else if (cls === 'promo') {
+    optPrice = Math.round(curPrice * 0.92);
+    optFill = Math.min(0.88, curFill + 0.10);
+  } else {
+    optPrice = Math.round(curPrice * 1.08);
+    optFill = curFill;
+  }
+  const optCrowd = Math.round(CAP * optFill);
+  const optRev = Math.round(optCrowd * optPrice);
+  return {cls, curFill, curPrice, curCrowd, curRev, optFill, optPrice, optCrowd, optRev};
+}
+
+function fmt(n){ return n.toLocaleString('en-GB'); }
+function gbp(n){ return '£' + fmt(n); }
+
+function setStandFill(prefix, fill, opt) {
+  // Vertical stands W/E: height from bottom
+  const h = 180 * fill;
+  const el = document.getElementById(prefix + '-fill');
+  if (prefix === 'w' || prefix === 'e') {
+    el.setAttribute('y', 50 + (180 - h));
+    el.setAttribute('height', h);
+  } else if (prefix === 'n') {
+    const hh = 36 * fill;
+    el.setAttribute('y', 18 + (36 - hh));
+    el.setAttribute('height', hh);
+    el.setAttribute('width', 184);
+  } else {
+    const hh = 36 * fill;
+    el.setAttribute('height', hh);
+  }
+  el.setAttribute('class', opt ? 'filled-opt' : 'filled');
+}
+
+function renderBowl(fill, opt) {
+  ['w','e','n','s'].forEach(s => setStandFill(s, fill, opt));
+  document.getElementById('stad-cap').textContent = Math.round(fill * 100) + '% full';
+}
+
+function selectFixture(idx) {
+  const f = FIXTURES[idx];
+  const e = estimate(f);
+  document.querySelectorAll('#fixture-rows tr').forEach((tr,i) => tr.classList.toggle('active', i===idx));
+
+  document.getElementById('match-title').textContent = f.date + ' · vs ' + f.opp;
+  document.getElementById('match-sub').textContent =
+    (f.live ? 'Live StubHub UK get-in £' + f.secondary : 'Model secondary £' + f.secondary) +
+    ' vs primary ~£' + f.primary + ' · ' + label(e.cls);
+
+  document.getElementById('cur-price').textContent = gbp(e.curPrice);
+  document.getElementById('cur-fill').textContent = Math.round(e.curFill*100) + '%';
+  document.getElementById('cur-crowd').textContent = fmt(e.curCrowd);
+  document.getElementById('cur-rev').textContent = gbp(e.curRev);
+  document.getElementById('cur-blurb').textContent =
+    e.cls === 'hold'
+      ? 'Ground nearly full at low face value — secondary proves willingness to pay more.'
+      : e.cls === 'promo'
+      ? 'Softer secondary; current bands may need stimulation to fill.'
+      : 'Secondary roughly aligned with face value.';
+
+  document.getElementById('opt-price').textContent = gbp(e.optPrice);
+  document.getElementById('opt-fill').textContent = Math.round(e.optFill*100) + '%';
+  document.getElementById('opt-crowd').textContent = fmt(e.optCrowd);
+  document.getElementById('opt-rev').textContent = gbp(e.optRev);
+  document.getElementById('opt-blurb').textContent =
+    e.cls === 'hold'
+      ? 'Lift average primary toward secondary demand while keeping a full house.'
+      : e.cls === 'promo'
+      ? 'Slightly lower price + targeted promo to lift attendance.'
+      : 'Modest band lift; monitor listings.';
+
+  const lift = e.optRev - e.curRev;
+  document.getElementById('delta-line').textContent =
+    (lift >= 0 ? '+£' : '−£') + fmt(Math.abs(lift)) + ' est. gate vs current strategy on this fixture';
+
+  // Bowl uses current fill; bars show people side-by-side
+  renderBowl(e.curFill, false);
+  document.getElementById('bar-cur').setAttribute('width', 260 * e.curFill);
+  document.getElementById('bar-opt').setAttribute('width', 260 * e.optFill);
+  document.getElementById('bar-cur-lbl').textContent = fmt(e.curCrowd) + ' fans';
+  document.getElementById('bar-opt-lbl').textContent = fmt(e.optCrowd) + ' fans · ' + gbp(e.optRev);
+}
+
+function buildTable() {
+  const tb = document.getElementById('fixture-rows');
+  tb.innerHTML = FIXTURES.map((f,i) => {
+    const e = estimate(f);
+    const gap = Math.round(f.secondary - f.primary);
+    const src = f.live ? '' : ' <span class="muted">(model)</span>';
+    return `<tr onclick="selectFixture(${i})" style="cursor:pointer">
+      <td class="mono">${f.date.slice(5)}</td>
+      <td>${f.opp}${f.bigSix?' ★':''}</td>
+      <td class="mono">£${f.secondary}${src}</td>
+      <td class="mono">£${f.primary}</td>
+      <td class="mono">${gap>=0?'+':''}£${gap}</td>
+      <td><span class="tag ${e.cls}">${label(e.cls)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+buildTable();
+selectFixture(0);
+</script>
+</body>
+</html>
