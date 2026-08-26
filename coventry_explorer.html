@@ -89,16 +89,16 @@ tr{cursor:pointer} tr:hover td{background:#f7f9fc} tr.active td{background:#fff7
 
   <nav class="tabs" aria-label="Time period">
     <span class="nav-label">View</span>
-    <button type="button" class="active" data-phase="historical" aria-pressed="true">
-      Past
-      <span class="btn-sub">2025–26 Championship · observed</span>
-    </button>
-    <button type="button" data-phase="projection" aria-pressed="false">
+    <button type="button" class="active" data-phase="projection" aria-pressed="true">
       Future · Premier League
       <span class="btn-sub">2026–27 · all 19 homes</span>
     </button>
+    <button type="button" data-phase="historical" aria-pressed="false">
+      Past
+      <span class="btn-sub">2025–26 Championship · observed</span>
+    </button>
   </nav>
-  <p class="tab-help" id="tab-help">Click a button above to switch. Past = games that already happened. Future = Premier League season ahead.</p>
+  <p class="tab-help" id="tab-help">Opens on Future (PL 2026–27). Switch to Past for Championship games that already happened.</p>
 
   <div id="summary-kpis" class="kpi-row"></div>
 
