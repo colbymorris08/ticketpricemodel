@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-Gillingham matchday revenue: actual vs optimized — League Two only.
+Gillingham matchday revenue: actual vs optimized — EFL League Two only.
 
-Past: 2025–26 League Two homes with observed attendance.
-Future: all 23 League Two 2026–27 homes. No Premier League module.
-Fill / WTP from Gillingham's own League Two history + opponent tier;
-observed attendance used when a home has already been played.
+Sales reality: StubHub UK almost never lists League Two get-ins. Primary comes from
+club-published Priestfield adult bands (£22–£25) plus League Two comps. Secondary is
+an L2 sales prior (thin resale premium), overridden only by plausible StubHub (£8–£80).
 """
 
 from __future__ import annotations
@@ -17,31 +16,74 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.model_selection import LeaveOneOut
 from sklearn.metrics import mean_absolute_percentage_error
+from sklearn.model_selection import LeaveOneOut
 
 ROOT = Path(__file__).resolve().parents[1]
 HIST = ROOT / "data" / "reference" / "gillingham_2526_home_attendance.csv"
 FIXTURES = ROOT / "data" / "fixtures" / "gillingham_2026_27_home.csv"
+SALES_SEED = ROOT / "data" / "reference" / "league_two_ticket_sales_seed.csv"
+SNAP_DIR = ROOT / "data" / "raw" / "secondary_snapshots"
 OUT_JSON = ROOT / "results" / "gillingham_profit_analysis.json"
 OUT_CSV = ROOT / "results" / "gillingham_profit_by_game.csv"
 EXPLORER = ROOT / "gillingham_explorer.html"
+
 CAP = 11582
-CONC_PER_HEAD = 6.0  # lower-league F&B placeholder vs PL £8
+CONC_PER_HEAD = 6.0
 CAPTURE_RATE = 0.45
+CLUB_PRIMARY_ADULT = 23.5
 
 
-def wtp_from_fill(primary: float, fill: float, tier: int) -> float:
-    if fill >= 0.70:
-        mult = 1.45
-    elif fill >= 0.55:
-        mult = 1.28
-    elif fill >= 0.45:
-        mult = 1.12
-    else:
-        mult = 1.02
-    tier_bump = {2: 0.0, 3: 0.05, 4: 0.12}.get(int(tier), 0.0)
-    return round(primary * (mult + tier_bump), 2)
+def load_sales_priors() -> dict:
+    seed = pd.read_csv(SALES_SEED)
+    gills = seed[seed["club"] == "Gillingham"]
+
+    def _cat(name: str, default: float) -> float:
+        s = gills.loc[gills["category"] == name, "price_gbp"]
+        return float(s.iloc[0]) if len(s) else default
+
+    return {
+        "primary_adult": _cat("home_adult_face", CLUB_PRIMARY_ADULT),
+        "sec_soft": _cat("wtp_soft", 24.5),
+        "sec_rivalry": _cat("wtp_rivalry", 29.5),
+        "sec_hot": _cat("wtp_hot", 32.0),
+        "n_seed_rows": int(len(seed)),
+        "stubhub_l2_note": (
+            "StubHub UK almost never lists League Two get-ins; "
+            "sales = club primary + L2 demand prior"
+        ),
+    }
+
+
+def latest_live_secondary() -> dict[str, float]:
+    if not SNAP_DIR.exists():
+        return {}
+    files = sorted(SNAP_DIR.glob("snapshot_*.csv"))
+    if not files:
+        return {}
+    snap = pd.read_csv(files[-1])
+    if "track" not in snap.columns:
+        return {}
+    g = snap[snap["track"].astype(str).str.contains("gillingham", case=False, na=False)]
+    out: dict[str, float] = {}
+    for _, r in g.iterrows():
+        price = r.get("secondary_get_in")
+        if pd.isna(price):
+            continue
+        price = float(price)
+        if 8 <= price <= 80:
+            out[str(r.get("fixture_id", ""))] = price
+            if pd.notna(r.get("away")):
+                out[str(r["away"]).strip().lower()] = price
+    return out
+
+
+def sales_secondary(primary: float, fill: float, tier: int, priors: dict) -> tuple[float, str]:
+    if fill >= 0.70 or tier >= 4:
+        return round(max(priors["sec_rivalry"], primary * 1.22), 2), "l2_sales_prior_rivalry"
+    if fill >= 0.55 or tier >= 3:
+        return round(max(priors["sec_hot"] * 0.9, primary * 1.12), 2), "l2_sales_prior_warm"
+    return round(max(priors["sec_soft"], primary * 1.04), 2), "l2_sales_prior_soft"
 
 
 def optimize_game(att: int, primary: float, secondary: float) -> dict:
@@ -51,28 +93,22 @@ def optimize_game(att: int, primary: float, secondary: float) -> dict:
     actual_total = ticket_rev + conc_rev
     ratio = secondary / max(primary, 1)
 
-    # Soft gates common in L2 — promo room when fill < ~55%
     if fill >= 0.62 and ratio >= 1.22:
         opt_price = primary + CAPTURE_RATE * (secondary - primary)
         opt_att = att
-        action = "PRICE_CAPTURE"
-        cls = "undervalued"
+        action, cls = "PRICE_CAPTURE", "undervalued"
     elif fill < 0.52 or ratio < 1.08:
         opt_price = primary * 0.93
         opt_att = min(CAP, int(att * 1.12))
-        action = "PROMO_TARGET"
-        cls = "soft"
+        action, cls = "PROMO_TARGET", "soft"
     else:
         opt_price = primary * 1.05
         opt_att = att
-        action = "MONITOR"
-        cls = "fair"
+        action, cls = "MONITOR", "fair"
 
     opt_ticket = opt_att * opt_price
     opt_conc = opt_att * CONC_PER_HEAD
     opt_total = opt_ticket + opt_conc
-    lift = opt_total - actual_total
-
     return {
         "attendance": att,
         "fill_pct": round(100 * fill, 1),
@@ -90,7 +126,7 @@ def optimize_game(att: int, primary: float, secondary: float) -> dict:
         "opt_ticket_rev": round(opt_ticket),
         "opt_conc_rev": round(opt_conc),
         "opt_total": round(opt_total),
-        "lift": round(lift),
+        "lift": round(opt_total - actual_total),
     }
 
 
@@ -99,22 +135,25 @@ def train_fill_model(hist: pd.DataFrame) -> tuple:
     y = (hist["attendance"] / hist["capacity"]).astype(float)
     model = GradientBoostingRegressor(n_estimators=60, max_depth=2, random_state=42)
     model.fit(X, y)
-    loo = LeaveOneOut()
     preds = []
-    for tr, te in loo.split(X):
+    for tr, te in LeaveOneOut().split(X):
         m = GradientBoostingRegressor(n_estimators=60, max_depth=2, random_state=42)
         m.fit(X.iloc[tr], y.iloc[tr])
         preds.append(float(m.predict(X.iloc[te])[0]))
     mae = float(np.mean(np.abs(y - np.array(preds))))
     mape = float(mean_absolute_percentage_error(y, preds)) * 100
-    return model, {"fill_loo_mae": round(mae, 3), "fill_loo_mape_pct": round(mape, 1), "n_hist": int(len(hist))}
+    return model, {
+        "fill_loo_mae": round(mae, 3),
+        "fill_loo_mape_pct": round(mape, 1),
+        "n_hist": int(len(hist)),
+    }
 
 
 def confidence_score(*, observed: bool, days_out: int, tier: int, fill_mape: float) -> tuple[int, str, str]:
     if observed:
         return 92, "high", "observed attendance"
     score = 48
-    reasons = ["League Two own-history model"]
+    reasons = ["League Two own-history fill + club sales prior"]
     score += max(5, 22 - int(fill_mape / 2))
     reasons.append(f"fill LOO MAPE {fill_mape:.0f}%")
     if tier >= 4:
@@ -137,13 +176,23 @@ def confidence_score(*, observed: bool, days_out: int, tier: int, fill_mape: flo
     return score, label, "; ".join(reasons)
 
 
-def analyze_historical() -> pd.DataFrame:
+def primary_for_tier(base: float, tier: int) -> float:
+    if tier >= 4:
+        return round(base + 1.5, 2)
+    if tier >= 3:
+        return round(base + 0.5, 2)
+    return round(base - 0.5, 2)
+
+
+def analyze_historical(priors: dict) -> pd.DataFrame:
     df = pd.read_csv(HIST, parse_dates=["date"])
     rows = []
     for _, r in df.iterrows():
         fill = r["attendance"] / r["capacity"]
-        secondary = wtp_from_fill(r["primary_avg_gbp"], fill, r["opponent_tier"])
-        out = optimize_game(int(r["attendance"]), float(r["primary_avg_gbp"]), secondary)
+        tier = int(r["opponent_tier"])
+        primary = primary_for_tier(priors["primary_adult"], tier)
+        secondary, sec_src = sales_secondary(primary, fill, tier, priors)
+        out = optimize_game(int(r["attendance"]), primary, secondary)
         out.update({
             "date": r["date"].strftime("%Y-%m-%d"),
             "opponent": r["opponent"],
@@ -152,41 +201,51 @@ def analyze_historical() -> pd.DataFrame:
             "certainty": "observed_attendance",
             "confidence": 92,
             "confidence_label": "high",
-            "confidence_reason": "observed attendance + fill-implied WTP",
+            "confidence_reason": "observed attendance + club/L2 sales prior",
             "played": True,
-            "secondary_source": "wtp_from_fill",
+            "secondary_source": sec_src,
+            "primary_source": "club_sales_band",
+            "model_secondary": secondary,
+            "att_lo90": None,
+            "att_hi90": None,
+            "lift_lo90": None,
+            "lift_hi90": None,
         })
         rows.append(out)
     return pd.DataFrame(rows)
 
 
-def analyze_forward(as_of: date | None = None) -> tuple[pd.DataFrame, dict]:
+def analyze_forward(priors: dict, as_of: date | None = None) -> tuple[pd.DataFrame, dict]:
     as_of = as_of or date.today()
     fixtures = pd.read_csv(FIXTURES, parse_dates=["date"])
     hist = pd.read_csv(HIST)
     fill_model, diag = train_fill_model(hist)
     mean_fill = float((hist["attendance"] / hist["capacity"]).mean())
     std_fill = float((hist["attendance"] / hist["capacity"]).std())
-
-    rows = []
+    live = latest_live_secondary()
+    n_live = 0
     n_played = 0
+    rows = []
+
     for _, f in fixtures.iterrows():
         d = f["date"].date()
         days_out = (d - as_of).days
         tier = int(f["opponent_tier"])
-        primary = float(f["primary_avg_gbp"])
         away = f["away"]
-        rivalry = int(f.get("rivalry_away", 0) or 0)
-        if away in ("Swindon Town", "Bromley") or rivalry:
+        if away in ("Swindon Town", "Bromley") or int(f.get("rivalry_away", 0) or 0):
             tier = max(tier, 4)
+
+        primary = primary_for_tier(priors["primary_adult"], tier)
+        if pd.notna(f.get("primary_avg_gbp")) and float(f["primary_avg_gbp"]) >= 21:
+            primary = float(f["primary_avg_gbp"])
 
         X = pd.DataFrame([{"opponent_tier": float(tier)}])
         model_fill = float(np.clip(fill_model.predict(X)[0], 0.35, 0.85))
-        # mild bumps
         if int(f.get("promoted_away", 0) or 0):
             model_fill = min(0.85, model_fill + 0.03)
         if away == "Rotherham United":
             model_fill = min(0.88, model_fill + 0.06)
+            tier = max(tier, 3)
 
         observed = pd.notna(f.get("observed_attendance")) and str(f.get("observed_attendance")).strip() != ""
         played = d < as_of or observed
@@ -195,27 +254,35 @@ def analyze_forward(as_of: date | None = None) -> tuple[pd.DataFrame, dict]:
             fill = att / CAP
             n_played += 1
             certainty = "observed_attendance"
-            secondary = wtp_from_fill(primary, fill, tier)
-            secondary_source = "wtp_from_fill_played"
+            secondary, sec_src = sales_secondary(primary, fill, tier, priors)
             conf, conf_lab, conf_why = confidence_score(
                 observed=True, days_out=days_out, tier=tier, fill_mape=diag["fill_loo_mape_pct"]
             )
+            conf_why = "observed attendance; " + conf_why
         else:
             fill = model_fill
             att = int(CAP * fill)
-            secondary = wtp_from_fill(primary, fill, tier)
-            # floor secondary slightly above soft primary for rivalry
-            if tier >= 4:
-                secondary = max(secondary, primary * 1.35)
-            secondary_source = "league_two_fill_model"
-            certainty = "model_secondary"
+            secondary, sec_src = sales_secondary(primary, fill, tier, priors)
+            certainty = "l2_sales_prior"
             conf, conf_lab, conf_why = confidence_score(
                 observed=False, days_out=days_out, tier=tier, fill_mape=diag["fill_loo_mape_pct"]
             )
+            conf_why = "League Two club-sales prior (thin StubHub); " + conf_why
             if played and not observed:
                 n_played += 1
                 certainty = "played_model_pending_attendance"
                 conf = min(conf, 65)
+
+        model_secondary = secondary
+        live_price = live.get(str(f.get("fixture_id", "")), live.get(away.strip().lower()))
+        if live_price is not None:
+            secondary = float(live_price)
+            sec_src = "live_stubhub_l2"
+            n_live += 1
+            conf = min(95, conf + 12)
+            conf_lab = "high" if conf >= 75 else conf_lab
+            conf_why = "live StubHub UK get-in (L2-filtered); " + conf_why
+            certainty = "live_secondary"
 
         out = optimize_game(att, primary, secondary)
         width = std_fill * (1.0 + (100 - conf) / 70.0)
@@ -230,9 +297,10 @@ def analyze_forward(as_of: date | None = None) -> tuple[pd.DataFrame, dict]:
             "confidence": conf,
             "confidence_label": conf_lab,
             "confidence_reason": conf_why,
-            "model_secondary": round(secondary, 2),
+            "model_secondary": round(model_secondary, 2),
             "played": bool(played),
-            "secondary_source": secondary_source,
+            "secondary_source": sec_src,
+            "primary_source": "club_sales_band",
             "days_out": days_out,
             "opponent_tier": tier,
             "att_lo90": lo,
@@ -247,20 +315,21 @@ def analyze_forward(as_of: date | None = None) -> tuple[pd.DataFrame, dict]:
         "as_of": as_of.isoformat(),
         "n_homes_total": int(len(fixtures)),
         "n_homes_played": n_played,
+        "n_live_stubhub": n_live,
         "mean_fill_hist": round(mean_fill, 3),
         "capacity": CAP,
         "venue": "Priestfield Stadium",
         "competition": "EFL League Two",
         "first_home_date": fixtures["date"].min().strftime("%Y-%m-%d"),
         "based_on_promotion_jump": False,
-        "note": "Gillingham compete in League Two (not Championship / Premier League).",
+        "club_primary_adult_gbp": priors["primary_adult"],
+        "sales_seed_rows": priors["n_seed_rows"],
+        "note": priors["stubhub_l2_note"],
     }
     return pd.DataFrame(rows), meta
 
 
 def embed_explorer(summary: dict) -> None:
-    if not EXPLORER.exists():
-        raise FileNotFoundError(EXPLORER)
     html = EXPLORER.read_text()
     payload = json.dumps(summary, separators=(",", ":"))
     marker = "const ANALYSIS = "
@@ -269,20 +338,17 @@ def embed_explorer(summary: dict) -> None:
         raise RuntimeError("ANALYSIS marker not found")
     brace = html.find("{", start)
     depth = 0
-    i = brace
     end = None
-    while i < len(html):
-        ch = html[i]
-        if ch == "{":
+    for i in range(brace, len(html)):
+        if html[i] == "{":
             depth += 1
-        elif ch == "}":
+        elif html[i] == "}":
             depth -= 1
             if depth == 0:
                 end = i + 1
                 if html[end:end + 1] == ";":
                     end += 1
                 break
-        i += 1
     if end is None:
         raise RuntimeError("Could not find end of ANALYSIS")
     EXPLORER.write_text(html[:start] + marker + payload + ";" + html[end:])
@@ -290,8 +356,9 @@ def embed_explorer(summary: dict) -> None:
 
 def main() -> None:
     as_of = date.today()
-    hist = analyze_historical()
-    fwd, model_meta = analyze_forward(as_of)
+    priors = load_sales_priors()
+    hist = analyze_historical(priors)
+    fwd, model_meta = analyze_forward(priors, as_of)
     all_df = pd.concat([hist, fwd], ignore_index=True)
     OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     all_df.to_csv(OUT_CSV, index=False)
@@ -306,8 +373,13 @@ def main() -> None:
         "method": {
             "competition": "EFL League Two only — no Premier League projection",
             "historical": "2025-26 League Two home attendances (observed)",
-            "projections_from": "Own-history GradientBoosting fill model by opponent tier + fill-implied WTP",
-            "promotion_jump": "Not applicable — Gillingham are League Two, not a Championship→PL jump case",
+            "sales_data": (
+                "Primary from Gillingham club published adult bands (£22–£25). "
+                "League Two comps in data/reference/league_two_ticket_sales_seed.csv. "
+                "StubHub UK almost never lists L2 get-ins — secondary uses L2 sales priors, not PL resale."
+            ),
+            "projections_from": "Own-history fill model + club/L2 sales priors for WTP",
+            "promotion_jump": "Not applicable — Gillingham are League Two",
             "concessions": f"£{CONC_PER_HEAD}/head League Two F&B placeholder",
             "optimization": "PRICE_CAPTURE when relatively full & WTP≫face; PROMO_TARGET on soft gates",
             "confidence": "Per-game 0–100 from observed vs model, tier, days-out",
@@ -329,11 +401,11 @@ def main() -> None:
             "n_soft": int((hist["class"] == "soft").sum()),
             "avg_confidence": round(float(hist["confidence"].mean()), 1),
         },
-        "projection_pl": {  # keep key name for explorer reuse; content is League Two future
+        "projection_pl": {
             "label": "League Two 2026–27",
             "n_games": int(len(fwd)),
             "n_played": int(model_meta["n_homes_played"]),
-            "n_live_stubhub": 0,
+            "n_live_stubhub": int(model_meta["n_live_stubhub"]),
             "actual_matchday_total_gbp": int(fwd["actual_total"].sum()),
             "optimized_matchday_total_gbp": int(fwd["opt_total"].sum()),
             "total_lift_gbp": int(fwd["lift"].sum()),
@@ -351,7 +423,7 @@ def main() -> None:
         "historical": summary["historical"],
         "future_l2": summary["projection_pl"],
         "model": summary["model"],
-        "played": summary["method"]["played_status"],
+        "sales": summary["method"]["sales_data"],
     }, indent=2))
     print(f"\nWrote {OUT_CSV}\nWrote {OUT_JSON}\nEmbedded {EXPLORER}")
 

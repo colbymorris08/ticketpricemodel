@@ -1,0 +1,21 @@
+club,season,source,channel,category,price_gbp,notes
+Gillingham,2024-25,club_fan_pack,primary_advance,adult_rainham_medway,22,Priestfield published adult advance
+Gillingham,2024-25,club_fan_pack,primary_advance,adult_gordon_road_lower,25,Priestfield premium blocks D/E
+Gillingham,2024-25,club_fan_pack,primary_advance,senior,19,65+
+Gillingham,2024-25,stadium_guide,primary_advance,adult_range_low,22,football-stadiums.co.uk summary
+Gillingham,2024-25,stadium_guide,primary_advance,adult_range_high,25,football-stadiums.co.uk summary
+Gillingham,2024-25,stadium_guide,primary_matchday_uplift,adult_matchday_extra,2,typical +£2 on the day
+Colchester United,2026-27,club_progressive,primary_advance,adult_band_mid,23.1,progressive pricing band
+Colchester United,2026-27,club_progressive,primary_matchday,adult_matchday,26,top progressive band
+Rochdale (away at Colchester),2026-27,club_allocation,primary_advance,adult_away,24.75,away allocation published
+Rochdale (away at Colchester),2026-27,club_allocation,primary_matchday,adult_away_matchday,27,on the day
+Crawley Town,2025-26,club_away_info,primary_advance,adult_seats,22,Bristol Rovers away info
+Crawley Town,2025-26,club_away_info,primary_advance,adult_terrace,20,Bristol Rovers away info
+Newport County,2026-27,club_away_info,primary_advance,adult,25,Fleetwood away info
+League Two,2026-27,koobit_market_note,primary_typical,adult_start_low,15,market note adult often £15–25
+League Two,2026-27,koobit_market_note,primary_typical,adult_start_high,25,market note adult often £15–25
+League Two,2026-27,market_structure,secondary_liquidity,stubhub_uk_coverage,0,StubHub UK almost never lists L2 get-ins; primary club channels dominate
+Gillingham,2026-27,derived,blended_primary_adult,home_adult_face,23.5,midpoint of £22–£25 Priestfield adult advance
+Gillingham,2026-27,derived,soft_demand_secondary_proxy,wtp_soft,24.5,primary + thin secondary premium on soft L2 gates
+Gillingham,2026-27,derived,rivalry_secondary_proxy,wtp_rivalry,29.5,Swindon / local pull — still near primary (thin resale)
+Gillingham,2026-27,derived,hot_secondary_proxy,wtp_hot,32,rare hot L2 home — still far below PL StubHub levels
