@@ -3,346 +3,255 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Coventry City Ticket Demand — CBS Arena Explorer</title>
+<title>Coventry Matchday Profit — Actual vs Optimized</title>
 <style>
-  :root{
-    --ink:#12141a; --muted:#5a6170; --line:#d8dde6; --bg:#f3f5f8;
-    --sky:#1a4f8a; --hold:#b45309; --hold-bg:#fff7ed; --hold-bd:#fdba74;
-    --promo:#1d6b4f; --promo-bg:#ecfdf5; --promo-bd:#6ee7b7;
-    --fair:#3d5a80; --fair-bg:#eef3f8; --fair-bd:#9eb6d4;
-    --pitch:#2d6a4f; --seat-empty:#e8ecf2; --seat-fill:#1a4f8a;
-    --opt:#0f766e; --opt-fill:#14b8a6;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
-  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 56px}
-  h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(26px,4vw,34px);letter-spacing:-.02em}
-  h2{font-family:Georgia,serif;font-size:20px;margin:28px 0 10px}
-  .sub{color:var(--muted);font-size:15px;max-width:720px;margin-top:8px}
-  .banner{margin:16px 0;padding:12px 14px;background:#eef3f8;border:1px solid var(--line);border-radius:8px;font-size:13px;color:#334}
-  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 6px}
-  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid}
-  .pill.hold{background:var(--hold-bg);border-color:var(--hold-bd);color:var(--hold)}
-  .pill.fair{background:var(--fair-bg);border-color:var(--fair-bd);color:var(--fair)}
-  .pill.promo{background:var(--promo-bg);border-color:var(--promo-bd);color:var(--promo)}
-  .dot{width:8px;height:8px;border-radius:50%}
-  .dot.hold{background:var(--hold)}.dot.fair{background:var(--fair)}.dot.promo{background:var(--promo)}
-
-  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:16px}
-  @media(max-width:900px){.grid{grid-template-columns:1fr}}
-  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 1px 2px rgba(18,20,26,.04)}
-  .card h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px}
-
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--ink);padding:8px 9px}
-  td{padding:9px;border-bottom:1px solid #eceff4;vertical-align:middle}
-  tr:hover td{background:#fafbfd}
-  tr.active td{background:#fff7ed}
-  .tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;display:inline-block}
-  .tag.hold{background:var(--hold-bg);color:var(--hold);border:1px solid var(--hold-bd)}
-  .tag.fair{background:var(--fair-bg);color:var(--fair);border:1px solid var(--fair-bd)}
-  .tag.promo{background:var(--promo-bg);color:var(--promo);border:1px solid var(--promo-bd)}
-  .mono{font-variant-numeric:tabular-nums}
-  .muted{color:var(--muted);font-size:12px}
-
-  .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
-  @media(max-width:700px){.compare{grid-template-columns:1fr}}
-  .panel{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fafbfc}
-  .panel.current{border-top:3px solid var(--sky)}
-  .panel.opt{border-top:3px solid var(--opt)}
-  .panel h4{font-size:14px;margin-bottom:4px}
-  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
-  .kpi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
-  .kpi .v{font-family:Georgia,serif;font-size:22px;font-weight:700}
-  .kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:2px}
-  .delta{font-size:13px;font-weight:700;color:var(--opt);margin-top:8px}
-
-  /* SVG stadium */
-  .stad{width:100%;max-width:360px;margin:8px auto 0;display:block}
-  .stad .empty{fill:var(--seat-empty)}
-  .stad .filled{fill:var(--seat-fill)}
-  .stad .filled-opt{fill:var(--opt-fill)}
-  .stad .pitch{fill:var(--pitch)}
-  .stad text{font-size:9px;fill:#445;font-family:system-ui,sans-serif}
-  .stad .cap-label{font-size:11px;font-weight:700;fill:var(--ink)}
-
-  .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
-  .foot a{color:var(--sky)}
-  button.rowbtn{all:unset;cursor:pointer;display:contents}
+:root{--ink:#12141a;--muted:#5a6170;--line:#d8dde6;--bg:#eef1f5;--sky:#1a4f8a;--hold:#b45309;--hold-bg:#fff7ed;--promo:#0f766e;--opt:#0f766e;--cur:#1a4f8a;--pitch:#2d6a4f;--empty:#dde3ec}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+.wrap{max-width:1140px;margin:0 auto;padding:28px 18px 60px}
+h1{font-family:Georgia,serif;font-size:clamp(24px,4vw,32px)}
+h2{font-family:Georgia,serif;font-size:20px;margin:26px 0 10px}
+.sub{color:var(--muted);font-size:14px;max-width:820px;margin-top:8px}
+.banner{margin:14px 0;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:8px;font-size:13px}
+.tabs{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+.tabs button{font:600 13px system-ui;padding:10px 16px;border-radius:8px;border:2px solid #1c1c1c;background:#fff;cursor:pointer}
+.tabs button.active{background:#1c1c1c;color:#fff}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+@media(max-width:800px){.kpi-row{grid-template-columns:1fr 1fr}}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.kpi .v{font-family:Georgia,serif;font-size:22px;font-weight:700}
+.kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:4px}
+.kpi.lift .v{color:var(--opt)}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px}
+.card h3{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#1c1c1c;color:#fff;font-size:10px;text-transform:uppercase;padding:7px 8px;text-align:left}
+td{padding:8px;border-bottom:1px solid #eceff4}
+tr{cursor:pointer} tr:hover td{background:#f7f9fc} tr.active td{background:#fff7ed}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
+.tag.undervalued{background:#fff7ed;color:#b45309}
+.tag.soft{background:#ecfdf5;color:#0f766e}
+.tag.fair{background:#eef3f8;color:#3d5a80}
+.mono{font-variant-numeric:tabular-nums}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+@media(max-width:720px){.compare{grid-template-columns:1fr}}
+.panel{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fafbfc}
+.panel.cur{border-top:4px solid var(--cur)}
+.panel.opt{border-top:4px solid var(--opt)}
+.panel h4{font-size:15px;margin-bottom:4px}
+.muted{color:var(--muted);font-size:12px}
+.stad{width:100%;max-width:340px;display:block;margin:10px auto 0}
+.stad .empty{fill:var(--empty)}.stad .filled{fill:var(--cur)}.stad .filled-opt{fill:#14b8a6}
+.stad .pitch{fill:var(--pitch)}
+.stad text{font-size:9px;fill:#445;font-family:system-ui}
+.money{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.money .box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+.money .box .v{font-family:Georgia,serif;font-size:18px;font-weight:700}
+.money .box .l{font-size:10px;color:var(--muted);text-transform:uppercase}
+.delta{margin-top:10px;font-weight:700;color:var(--opt);font-size:14px}
+.method{font-size:13px;color:#444;margin-top:8px}
+.method li{margin:4px 0 4px 16px}
+.foot{margin-top:28px;font-size:11px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.hide{display:none!important}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Coventry City · Ticket Demand Explorer</h1>
-    <p class="sub">2026–27 Premier League return at the Coventry Building Society Arena. Secondary market get-in prices vs club face value — and what an optimized pricing strategy could look like on the same night.</p>
-  </header>
+  <h1>Coventry City · Matchday Profit Analysis</h1>
+  <p class="sub">Warriors-style matchday economics: <strong>ticket revenue + concessions</strong>. Left = money made with no pricing change. Right = money with optimized price capture / targeted promo — stadium shown filled in both views.</p>
 
   <div class="banner">
-    <strong>Snapshot:</strong> 25 Aug 2026 · Live StubHub UK for next 3 homes · Capacity <strong>32,609</strong> · Model: secondary get-in − primary band → pricing action.
-    Illustrative attendance &amp; revenue for the selected fixture (not club ledger data).
+    <strong>Certainty layer:</strong> 20 completed 2025–26 Championship home games with <em>observed attendance</em>.
+    <strong>Projection layer:</strong> 2026–27 Premier League homes using StubHub UK secondary (live where available) + historical fill priors with 90% intervals.
   </div>
 
-  <div class="legend">
-    <span class="pill hold"><span class="dot hold"></span> Undervalued face value — HOLD (no promo; raise bands)</span>
-    <span class="pill fair"><span class="dot fair"></span> Fair / monitor</span>
-    <span class="pill promo"><span class="dot promo"></span> Soft demand — PROMOTE</span>
-  </div>
+  <nav class="tabs">
+    <button type="button" class="active" data-phase="historical">Historical (certainty)</button>
+    <button type="button" data-phase="projection">PL projection</button>
+  </nav>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Home fixtures · secondary vs primary</h3>
+  <div id="summary-kpis" class="kpi-row"></div>
+
+  <div class="card">
+    <h3 id="table-title">Games</h3>
+    <div style="overflow:auto">
       <table>
         <thead>
           <tr>
-            <th>Date</th><th>Opponent</th><th>Secondary</th><th>Primary</th><th>Gap</th><th>Call</th>
+            <th>Date</th><th>Opponent</th><th>Att</th><th>Fill</th><th>Primary</th><th>WTP / Sec</th><th>Actual £</th><th>Optimized £</th><th>Lift</th><th>Call</th>
           </tr>
         </thead>
-        <tbody id="fixture-rows"></tbody>
+        <tbody id="rows"></tbody>
       </table>
-      <p class="muted" style="margin-top:10px">Click a row to update the stadium view. Live = StubHub UK scrape. Model = forecast from promoted-club priors.</p>
-    </div>
-
-    <div class="card">
-      <h3>CBS Arena · seating layout</h3>
-      <svg class="stad" viewBox="0 0 320 280" aria-label="CBS Arena bowl map">
-        <!-- West (left, two-tier premium) -->
-        <rect id="w-empty" class="empty" x="18" y="50" width="42" height="180" rx="6"/>
-        <rect id="w-fill" x="18" y="50" width="42" height="0" rx="6"/>
-        <!-- East -->
-        <rect id="e-empty" class="empty" x="260" y="50" width="42" height="180" rx="6"/>
-        <rect id="e-fill" x="260" y="50" width="42" height="0" rx="6"/>
-        <!-- North -->
-        <rect id="n-empty" class="empty" x="68" y="18" width="184" height="36" rx="6"/>
-        <rect id="n-fill" x="68" y="18" width="184" height="0" rx="6"/>
-        <!-- South (away end left portion) -->
-        <rect id="s-empty" class="empty" x="68" y="226" width="184" height="36" rx="6"/>
-        <rect id="s-fill" x="68" y="226" width="184" height="0" rx="6"/>
-        <!-- Pitch -->
-        <rect class="pitch" x="72" y="64" width="176" height="152" rx="4"/>
-        <rect x="148" y="126" width="24" height="28" fill="none" stroke="#fff" stroke-width="1.5" opacity=".7"/>
-        <circle cx="160" cy="140" r="18" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/>
-        <text x="28" y="145" transform="rotate(-90 28 145)">West · premium</text>
-        <text x="292" y="145" transform="rotate(90 292 145)">East</text>
-        <text x="160" y="40" text-anchor="middle">North · family</text>
-        <text x="160" y="250" text-anchor="middle">South · away / singers</text>
-        <text id="stad-cap" class="cap-label" x="160" y="144" text-anchor="middle">—</text>
-      </svg>
-      <p class="muted" style="text-align:center;margin-top:6px">Bowl schematic (32,609). Fill = estimated attendance for selected game.</p>
     </div>
   </div>
 
-  <h2 id="match-title">Select a fixture</h2>
-  <p class="sub" id="match-sub">Current primary pricing vs secondary willingness to pay — side by side.</p>
+  <h2 id="match-title">Select a game</h2>
+  <p class="muted" id="match-sub"></p>
 
-  <div class="compare" id="compare">
-    <div class="panel current">
-      <h4>Tonight · current primary strategy</h4>
-      <p class="muted" id="cur-blurb">Face-value bands as published / estimated.</p>
-      <div class="kpis">
-        <div class="kpi"><div class="v mono" id="cur-price">—</div><div class="l">Avg primary £</div></div>
-        <div class="kpi"><div class="v mono" id="cur-fill">—</div><div class="l">Est. fill %</div></div>
-        <div class="kpi"><div class="v mono" id="cur-crowd">—</div><div class="l">Est. attendance</div></div>
-        <div class="kpi"><div class="v mono" id="cur-rev">—</div><div class="l">Est. gate £</div></div>
-      </div>
-      <svg class="stad" viewBox="0 0 320 200" aria-hidden="true">
-        <rect class="empty" x="30" y="30" width="260" height="140" rx="10"/>
-        <rect id="bar-cur" class="filled" x="30" y="30" width="0" height="140" rx="10"/>
-        <text x="160" y="108" text-anchor="middle" class="cap-label" id="bar-cur-lbl">people in seats</text>
+  <div class="compare">
+    <div class="panel cur">
+      <h4>No change — money made as priced</h4>
+      <p class="muted">Actual / projected attendance × primary band + £8/head concessions (Warriors ticket+concession frame).</p>
+      <svg class="stad" viewBox="0 0 320 260" aria-label="Current fill">
+        <rect class="empty" x="18" y="48" width="42" height="170" rx="6"/>
+        <rect id="cw" class="filled" x="18" y="48" width="42" height="0" rx="6"/>
+        <rect class="empty" x="260" y="48" width="42" height="170" rx="6"/>
+        <rect id="ce" class="filled" x="260" y="48" width="42" height="0" rx="6"/>
+        <rect class="empty" x="68" y="16" width="184" height="34" rx="6"/>
+        <rect id="cn" class="filled" x="68" y="16" width="184" height="0" rx="6"/>
+        <rect class="empty" x="68" y="214" width="184" height="34" rx="6"/>
+        <rect id="cs" class="filled" x="68" y="214" width="184" height="0" rx="6"/>
+        <rect class="pitch" x="72" y="60" width="176" height="144" rx="4"/>
+        <text id="c-label" x="160" y="136" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#fff">—</text>
       </svg>
+      <div class="money">
+        <div class="box"><div class="v mono" id="c-ticket">—</div><div class="l">Ticket £</div></div>
+        <div class="box"><div class="v mono" id="c-conc">—</div><div class="l">Concession £</div></div>
+        <div class="box" style="grid-column:1/-1"><div class="v mono" id="c-total">—</div><div class="l">Total matchday £</div></div>
+      </div>
     </div>
     <div class="panel opt">
-      <h4>Optimized · capture secondary gap</h4>
-      <p class="muted" id="opt-blurb">Raise primary toward secondary demand; keep fill high on hot games.</p>
-      <div class="kpis">
-        <div class="kpi"><div class="v mono" id="opt-price">—</div><div class="l">Target primary £</div></div>
-        <div class="kpi"><div class="v mono" id="opt-fill">—</div><div class="l">Est. fill %</div></div>
-        <div class="kpi"><div class="v mono" id="opt-crowd">—</div><div class="l">Est. attendance</div></div>
-        <div class="kpi"><div class="v mono" id="opt-rev">—</div><div class="l">Est. gate £</div></div>
-      </div>
-      <svg class="stad" viewBox="0 0 320 200" aria-hidden="true">
-        <rect class="empty" x="30" y="30" width="260" height="140" rx="10"/>
-        <rect id="bar-opt" class="filled-opt" x="30" y="30" width="0" height="140" rx="10"/>
-        <text x="160" y="108" text-anchor="middle" class="cap-label" id="bar-opt-lbl">people + profit</text>
+      <h4>Optimized — price capture / targeted promo</h4>
+      <p class="muted">Same Warriors frame: raise price when near-full &amp; WTP≪secondary; or promo-target soft games to lift fill.</p>
+      <svg class="stad" viewBox="0 0 320 260" aria-label="Optimized fill">
+        <rect class="empty" x="18" y="48" width="42" height="170" rx="6"/>
+        <rect id="ow" class="filled-opt" x="18" y="48" width="42" height="0" rx="6"/>
+        <rect class="empty" x="260" y="48" width="42" height="170" rx="6"/>
+        <rect id="oe" class="filled-opt" x="260" y="48" width="42" height="0" rx="6"/>
+        <rect class="empty" x="68" y="16" width="184" height="34" rx="6"/>
+        <rect id="on" class="filled-opt" x="68" y="16" width="184" height="0" rx="6"/>
+        <rect class="empty" x="68" y="214" width="184" height="34" rx="6"/>
+        <rect id="os" class="filled-opt" x="68" y="214" width="184" height="0" rx="6"/>
+        <rect class="pitch" x="72" y="60" width="176" height="144" rx="4"/>
+        <text id="o-label" x="160" y="136" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#fff">—</text>
       </svg>
-      <p class="delta" id="delta-line"></p>
+      <div class="money">
+        <div class="box"><div class="v mono" id="o-ticket">—</div><div class="l">Ticket £</div></div>
+        <div class="box"><div class="v mono" id="o-conc">—</div><div class="l">Concession £</div></div>
+        <div class="box" style="grid-column:1/-1"><div class="v mono" id="o-total">—</div><div class="l">Total matchday £</div></div>
+      </div>
+      <p class="delta" id="delta"></p>
     </div>
   </div>
 
-  <div class="card" style="margin-top:18px">
-    <h3>How to read this</h3>
-    <ul style="margin:8px 0 0 18px;font-size:13px;color:#444">
-      <li><strong>Undervalued</strong> — secondary get-in is well above club face value. Fans are paying more on StubHub than the club charges. Action: <strong>HOLD</strong> inventory, raise category bands, package premium.</li>
-      <li><strong>Soft demand</strong> — secondary near or below face value with weak listings. Action: <strong>PROMOTE</strong> (targeted offers), don’t blanket-discount hot games.</li>
-      <li><strong>Optimized revenue</strong> — illustrative: lift average primary toward ~60–70% of observed secondary on HOLD games while keeping fill ≥ current. Not a club invoice.</li>
+  <div class="card">
+    <h3>Method (Warriors analytics outcomes)</h3>
+    <ul class="method">
+      <li><strong>Matchday total</strong> = ticket revenue + concession revenue (same structure as Warriors lab sales data).</li>
+      <li><strong>Timing segments</strong> (Planner / In-Between / Last-Minute) inform <em>who</em> to promo — soft games use PROMO_TARGET (fill lift), not blast emails.</li>
+      <li><strong>PRICE_CAPTURE</strong> when fill is high and willingness-to-pay ≫ face value: raise avg primary, keep attendance (no empty seats left of money).</li>
+      <li><strong>Historical certainty</strong> uses observed Championship attendances. <strong>PL projection</strong> uses StubHub secondary + fill priors with 90% lift bands.</li>
     </ul>
   </div>
 
   <footer class="foot">
-    Coventry Building Society Arena · capacity 32,609 (football).
-    Data: StubHub UK secondary snapshots + estimated primary bands.
-    Full project: <a href="https://github.com/colbymorris08/ticketpricemodel">github.com/colbymorris08/ticketpricemodel</a>
-    · Live page: <a href="https://colbymorris08.github.io/ticketpricemodel/coventry_explorer.html">colbymorris08.github.io/ticketpricemodel/coventry_explorer.html</a>
+    CBS Arena capacity 32,609 · Analysis JSON: results/coventry_profit_analysis.json ·
+    <a href="https://github.com/colbymorris08/ticketpricemodel">github.com/colbymorris08/ticketpricemodel</a> ·
+    <a href="https://colbymorris08.github.io/ticketpricemodel/coventry_explorer.html">Public page</a>
   </footer>
 </div>
-
 <script>
-const CAP = 32609;
-const FIXTURES = [
-  {id:'h01', date:'2026-08-29', opp:'Hull City', secondary:114, primary:45, live:true, bigSix:false},
-  {id:'h02', date:'2026-09-13', opp:'Brighton & Hove Albion', secondary:133, primary:45, live:true, bigSix:false},
-  {id:'h03', date:'2026-10-10', opp:'Newcastle United', secondary:240, primary:48, live:true, bigSix:false},
-  {id:'h04', date:'2026-10-24', opp:'Fulham', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h05', date:'2026-10-31', opp:'Sunderland', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h06', date:'2026-11-21', opp:'Crystal Palace', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h07', date:'2026-12-02', opp:'Ipswich Town', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h08', date:'2026-12-12', opp:'Aston Villa', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h09', date:'2026-12-26', opp:'Chelsea', secondary:95, primary:45, live:false, bigSix:true},
-  {id:'h10', date:'2026-12-30', opp:'Brentford', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h11', date:'2027-01-16', opp:'Everton', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h12', date:'2027-01-30', opp:'Leeds United', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h13', date:'2027-02-10', opp:'Liverpool', secondary:95, primary:55, live:false, bigSix:true},
-  {id:'h14', date:'2027-02-27', opp:'Bournemouth', secondary:67.5, primary:45, live:false, bigSix:false},
-  {id:'h15', date:'2027-03-13', opp:'Manchester City', secondary:95, primary:55, live:false, bigSix:true},
-  {id:'h16', date:'2027-04-10', opp:'Arsenal', secondary:95, primary:55, live:false, bigSix:true},
-  {id:'h17', date:'2027-05-01', opp:'Manchester United', secondary:95, primary:45, live:false, bigSix:true},
-  {id:'h18', date:'2027-05-15', opp:'Tottenham Hotspur', secondary:95, primary:45, live:false, bigSix:true},
-  {id:'h19', date:'2027-05-30', opp:'Nottingham Forest', secondary:67.5, primary:45, live:false, bigSix:false},
-];
+const ANALYSIS = {"capacity": 32609, "conc_per_head_gbp": 8.0, "capture_rate": 0.55, "method": {"source": "Warriors ticket timing + matchday revenue (ticket + concession)", "historical": "2025-26 Championship home attendances (observed)", "wtp_proxy": "fill-based willingness-to-pay when StubHub history unavailable", "optimization": "PRICE_CAPTURE when near-full & secondary>>primary; PROMO_TARGET when soft"}, "historical": {"n_games": 20, "total_attendance": 606651, "avg_fill_pct": 93.0, "actual_matchday_total_gbp": 25449012, "optimized_matchday_total_gbp": 30257196, "total_lift_gbp": 4808184, "lift_pct": 18.9, "n_undervalued": 16, "n_soft": 1}, "projection_pl": {"n_games": 8, "actual_matchday_total_gbp": 14389102, "optimized_matchday_total_gbp": 23766420, "total_lift_gbp": 9377318, "lift_pct": 65.2, "lift_lo90_sum": 8906159, "lift_hi90_sum": 9614387}, "games": [{"attendance": 29052, "fill_pct": 89.1, "primary": 32.0, "secondary_or_wtp": 37.76, "ratio": 1.18, "class": "fair", "action": "MONITOR", "actual_ticket_rev": 929664, "actual_conc_rev": 232416, "actual_total": 1162080, "opt_price": 33.92, "opt_attendance": 29052, "opt_fill_pct": 89.1, "opt_ticket_rev": 985444, "opt_conc_rev": 232416, "opt_total": 1217860, "lift": 55780, "date": "2025-08-09", "opponent": "Hull City", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 29015, "fill_pct": 89.0, "primary": 32.0, "secondary_or_wtp": 37.76, "ratio": 1.18, "class": "fair", "action": "MONITOR", "actual_ticket_rev": 928480, "actual_conc_rev": 232120, "actual_total": 1160600, "opt_price": 33.92, "opt_attendance": 29015, "opt_fill_pct": 89.0, "opt_ticket_rev": 984189, "opt_conc_rev": 232120, "opt_total": 1216309, "lift": 55709, "date": "2025-08-23", "opponent": "Queens Park Rangers", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 30547, "fill_pct": 93.7, "primary": 34.0, "secondary_or_wtp": 47.94, "ratio": 1.41, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1038598, "actual_conc_rev": 244376, "actual_total": 1282974, "opt_price": 41.67, "opt_attendance": 30547, "opt_fill_pct": 93.7, "opt_ticket_rev": 1272802, "opt_conc_rev": 244376, "opt_total": 1517178, "lift": 234204, "date": "2025-09-13", "opponent": "Norwich City", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 30585, "fill_pct": 93.8, "primary": 34.0, "secondary_or_wtp": 47.94, "ratio": 1.41, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1039890, "actual_conc_rev": 244680, "actual_total": 1284570, "opt_price": 41.67, "opt_attendance": 30585, "opt_fill_pct": 93.8, "opt_ticket_rev": 1274385, "opt_conc_rev": 244680, "opt_total": 1519065, "lift": 234495, "date": "2025-09-27", "opponent": "Birmingham City", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 29606, "fill_pct": 90.8, "primary": 32.0, "secondary_or_wtp": 43.2, "ratio": 1.35, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 947392, "actual_conc_rev": 236848, "actual_total": 1184240, "opt_price": 38.16, "opt_attendance": 29606, "opt_fill_pct": 90.8, "opt_ticket_rev": 1129765, "opt_conc_rev": 236848, "opt_total": 1366613, "lift": 182373, "date": "2025-10-18", "opponent": "Blackburn Rovers", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 30109, "fill_pct": 92.3, "primary": 33.0, "secondary_or_wtp": 44.55, "ratio": 1.35, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 993597, "actual_conc_rev": 240872, "actual_total": 1234469, "opt_price": 39.35, "opt_attendance": 30109, "opt_fill_pct": 92.3, "opt_ticket_rev": 1184864, "opt_conc_rev": 240872, "opt_total": 1425736, "lift": 191267, "date": "2025-10-25", "opponent": "Watford", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 29589, "fill_pct": 90.7, "primary": 34.0, "secondary_or_wtp": 47.94, "ratio": 1.41, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1006026, "actual_conc_rev": 236712, "actual_total": 1242738, "opt_price": 41.67, "opt_attendance": 29589, "opt_fill_pct": 90.7, "opt_ticket_rev": 1232885, "opt_conc_rev": 236712, "opt_total": 1469597, "lift": 226859, "date": "2025-11-04", "opponent": "Sheffield United", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 29216, "fill_pct": 89.6, "primary": 33.0, "secondary_or_wtp": 40.92, "ratio": 1.24, "class": "fair", "action": "MONITOR", "actual_ticket_rev": 964128, "actual_conc_rev": 233728, "actual_total": 1197856, "opt_price": 34.98, "opt_attendance": 29216, "opt_fill_pct": 89.6, "opt_ticket_rev": 1021976, "opt_conc_rev": 233728, "opt_total": 1255704, "lift": 57848, "date": "2025-11-22", "opponent": "West Bromwich Albion", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31141, "fill_pct": 95.5, "primary": 34.0, "secondary_or_wtp": 52.7, "ratio": 1.55, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1058794, "actual_conc_rev": 249128, "actual_total": 1307922, "opt_price": 44.29, "opt_attendance": 31141, "opt_fill_pct": 95.5, "opt_ticket_rev": 1379079, "opt_conc_rev": 249128, "opt_total": 1628207, "lift": 320285, "date": "2025-11-29", "opponent": "Charlton Athletic", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 29505, "fill_pct": 90.5, "primary": 32.0, "secondary_or_wtp": 43.2, "ratio": 1.35, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 944160, "actual_conc_rev": 236040, "actual_total": 1180200, "opt_price": 38.16, "opt_attendance": 29505, "opt_fill_pct": 90.5, "opt_ticket_rev": 1125911, "opt_conc_rev": 236040, "opt_total": 1361951, "lift": 181751, "date": "2025-12-13", "opponent": "Bristol City", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 30139, "fill_pct": 92.4, "primary": 35.0, "secondary_or_wtp": 47.25, "ratio": 1.35, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1054865, "actual_conc_rev": 241112, "actual_total": 1295977, "opt_price": 41.74, "opt_attendance": 30139, "opt_fill_pct": 92.4, "opt_ticket_rev": 1257927, "opt_conc_rev": 241112, "opt_total": 1499039, "lift": 203062, "date": "2025-12-26", "opponent": "Swansea City", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31213, "fill_pct": 95.7, "primary": 36.0, "secondary_or_wtp": 60.12, "ratio": 1.67, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1123668, "actual_conc_rev": 249704, "actual_total": 1373372, "opt_price": 49.27, "opt_attendance": 31213, "opt_fill_pct": 95.7, "opt_ticket_rev": 1537740, "opt_conc_rev": 249704, "opt_total": 1787444, "lift": 414072, "date": "2025-12-29", "opponent": "Ipswich Town", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31410, "fill_pct": 96.3, "primary": 38.0, "secondary_or_wtp": 63.46, "ratio": 1.67, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1193580, "actual_conc_rev": 251280, "actual_total": 1444860, "opt_price": 52.0, "opt_attendance": 31410, "opt_fill_pct": 96.3, "opt_ticket_rev": 1633414, "opt_conc_rev": 251280, "opt_total": 1884694, "lift": 439834, "date": "2026-01-17", "opponent": "Leicester City", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 28605, "fill_pct": 87.7, "primary": 30.0, "secondary_or_wtp": 35.4, "ratio": 1.18, "class": "soft", "action": "PROMO_TARGET", "actual_ticket_rev": 858150, "actual_conc_rev": 228840, "actual_total": 1086990, "opt_price": 28.5, "opt_attendance": 30893, "opt_fill_pct": 94.7, "opt_ticket_rev": 880450, "opt_conc_rev": 247144, "opt_total": 1127594, "lift": 40604, "date": "2026-01-20", "opponent": "Millwall", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 30218, "fill_pct": 92.7, "primary": 32.0, "secondary_or_wtp": 43.2, "ratio": 1.35, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 966976, "actual_conc_rev": 241744, "actual_total": 1208720, "opt_price": 38.16, "opt_attendance": 30218, "opt_fill_pct": 92.7, "opt_ticket_rev": 1153119, "opt_conc_rev": 241744, "opt_total": 1394863, "lift": 186143, "date": "2026-02-07", "opponent": "Oxford United", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 30908, "fill_pct": 94.8, "primary": 34.0, "secondary_or_wtp": 47.94, "ratio": 1.41, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1050872, "actual_conc_rev": 247264, "actual_total": 1298136, "opt_price": 41.67, "opt_attendance": 30908, "opt_fill_pct": 94.8, "opt_ticket_rev": 1287844, "opt_conc_rev": 247264, "opt_total": 1535108, "lift": 236972, "date": "2026-02-16", "opponent": "Middlesbrough", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31516, "fill_pct": 96.6, "primary": 35.0, "secondary_or_wtp": 56.35, "ratio": 1.61, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1103060, "actual_conc_rev": 252128, "actual_total": 1355188, "opt_price": 46.74, "opt_attendance": 31516, "opt_fill_pct": 96.6, "opt_ticket_rev": 1473137, "opt_conc_rev": 252128, "opt_total": 1725265, "lift": 370077, "date": "2026-02-28", "opponent": "Stoke City", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31281, "fill_pct": 95.9, "primary": 37.0, "secondary_or_wtp": 61.79, "ratio": 1.67, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1157397, "actual_conc_rev": 250248, "actual_total": 1407645, "opt_price": 50.63, "opt_attendance": 31281, "opt_fill_pct": 95.9, "opt_ticket_rev": 1583898, "opt_conc_rev": 250248, "opt_total": 1834146, "lift": 426501, "date": "2026-03-14", "opponent": "Southampton", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31349, "fill_pct": 96.1, "primary": 35.0, "secondary_or_wtp": 56.35, "ratio": 1.61, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1097215, "actual_conc_rev": 250792, "actual_total": 1348007, "opt_price": 46.74, "opt_attendance": 31349, "opt_fill_pct": 96.1, "opt_ticket_rev": 1465331, "opt_conc_rev": 250792, "opt_total": 1716123, "lift": 368116, "date": "2026-04-03", "opponent": "Derby County", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31647, "fill_pct": 97.0, "primary": 36.0, "secondary_or_wtp": 57.96, "ratio": 1.61, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1139292, "actual_conc_rev": 253176, "actual_total": 1392468, "opt_price": 48.08, "opt_attendance": 31647, "opt_fill_pct": 97.0, "opt_ticket_rev": 1521524, "opt_conc_rev": 253176, "opt_total": 1774700, "lift": 382232, "date": "2026-04-11", "opponent": "Sheffield Wednesday", "competition": "Championship", "phase": "historical", "certainty": "observed_attendance", "att_lo90": null, "att_hi90": null, "lift_lo90": null, "lift_hi90": null}, {"attendance": 31486, "fill_pct": 96.6, "primary": 45.0, "secondary_or_wtp": 114.0, "ratio": 2.53, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1416870, "actual_conc_rev": 251888, "actual_total": 1668758, "opt_price": 82.95, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 2611764, "opt_conc_rev": 251888, "opt_total": 2863652, "lift": 1194894, "date": "2026-08-29", "opponent": "Hull City", "competition": "Premier League", "phase": "projection", "certainty": "live_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 1134857.0, "lift_hi90": 1225102.0}, {"attendance": 31486, "fill_pct": 96.6, "primary": 45.0, "secondary_or_wtp": 133.0, "ratio": 2.96, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1416870, "actual_conc_rev": 251888, "actual_total": 1668758, "opt_price": 93.4, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 2940792, "opt_conc_rev": 251888, "opt_total": 3192680, "lift": 1523922, "date": "2026-09-13", "opponent": "Brighton & Hove Albion", "competition": "Premier League", "phase": "projection", "certainty": "live_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 1447354.0, "lift_hi90": 1562449.0}, {"attendance": 31486, "fill_pct": 96.6, "primary": 48.0, "secondary_or_wtp": 240.0, "ratio": 5.0, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1511328, "actual_conc_rev": 251888, "actual_total": 1763216, "opt_price": 153.6, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 4836250, "opt_conc_rev": 251888, "opt_total": 5088138, "lift": 3324922, "date": "2026-10-10", "opponent": "Newcastle United", "competition": "Premier League", "phase": "projection", "certainty": "live_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 3157862.0, "lift_hi90": 3408979.0}, {"attendance": 31486, "fill_pct": 96.6, "primary": 45.0, "secondary_or_wtp": 67.5, "ratio": 1.5, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1416870, "actual_conc_rev": 251888, "actual_total": 1668758, "opt_price": 57.38, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 1806509, "opt_conc_rev": 251888, "opt_total": 2058397, "lift": 389639, "date": "2026-10-24", "opponent": "Fulham", "competition": "Premier League", "phase": "projection", "certainty": "model_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 370062.0, "lift_hi90": 399490.0}, {"attendance": 31486, "fill_pct": 96.6, "primary": 45.0, "secondary_or_wtp": 95.0, "ratio": 2.11, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1416870, "actual_conc_rev": 251888, "actual_total": 1668758, "opt_price": 72.5, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 2282735, "opt_conc_rev": 251888, "opt_total": 2534623, "lift": 865865, "date": "2026-12-26", "opponent": "Chelsea", "competition": "Premier League", "phase": "projection", "certainty": "model_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 822360.0, "lift_hi90": 887755.0}, {"attendance": 31486, "fill_pct": 96.6, "primary": 55.0, "secondary_or_wtp": 95.0, "ratio": 1.73, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1731730, "actual_conc_rev": 251888, "actual_total": 1983618, "opt_price": 77.0, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 2424422, "opt_conc_rev": 251888, "opt_total": 2676310, "lift": 692692, "date": "2027-02-10", "opponent": "Liverpool", "competition": "Premier League", "phase": "projection", "certainty": "model_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 657888.0, "lift_hi90": 710204.0}, {"attendance": 31486, "fill_pct": 96.6, "primary": 55.0, "secondary_or_wtp": 95.0, "ratio": 1.73, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1731730, "actual_conc_rev": 251888, "actual_total": 1983618, "opt_price": 77.0, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 2424422, "opt_conc_rev": 251888, "opt_total": 2676310, "lift": 692692, "date": "2027-03-13", "opponent": "Manchester City", "competition": "Premier League", "phase": "projection", "certainty": "model_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 657888.0, "lift_hi90": 710204.0}, {"attendance": 31486, "fill_pct": 96.6, "primary": 55.0, "secondary_or_wtp": 95.0, "ratio": 1.73, "class": "undervalued", "action": "PRICE_CAPTURE", "actual_ticket_rev": 1731730, "actual_conc_rev": 251888, "actual_total": 1983618, "opt_price": 77.0, "opt_attendance": 31486, "opt_fill_pct": 96.6, "opt_ticket_rev": 2424422, "opt_conc_rev": 251888, "opt_total": 2676310, "lift": 692692, "date": "2027-04-10", "opponent": "Arsenal", "competition": "Premier League", "phase": "projection", "certainty": "model_secondary", "att_lo90": 29904.0, "att_hi90": 32282.0, "lift_lo90": 657888.0, "lift_hi90": 710204.0}]};
 
-function classify(f) {
-  const ratio = f.secondary / Math.max(f.primary, 1);
-  if (ratio >= 1.35) return 'hold';      // undervalued face value
-  if (ratio < 1.05) return 'promo';      // soft / overpriced relative to demand
-  return 'fair';
-}
+const CAP = ANALYSIS.capacity;
+let phase = 'historical';
+let selected = 0;
 
-function label(cls) {
-  if (cls === 'hold') return 'Undervalued';
-  if (cls === 'promo') return 'Soft demand';
-  return 'Fair';
-}
+function gbp(n){ return '£' + Math.round(n).toLocaleString('en-GB'); }
+function games(){ return ANALYSIS.games.filter(g => g.phase === phase); }
 
-function estimate(f) {
-  const cls = classify(f);
-  // Current: hot games nearly full; softer games lower fill
-  let curFill = 0.82;
-  if (cls === 'hold') curFill = f.live ? 0.96 : 0.90;
-  if (cls === 'promo') curFill = 0.72;
-  if (f.bigSix) curFill = Math.max(curFill, 0.94);
-
-  const curPrice = f.primary;
-  const curCrowd = Math.round(CAP * curFill);
-  const curRev = Math.round(curCrowd * curPrice);
-
-  // Optimized: capture part of secondary gap on HOLD; nudge promo games with slight price cut + fill lift
-  let optPrice = curPrice;
-  let optFill = curFill;
-  if (cls === 'hold') {
-    optPrice = Math.round(Math.min(f.secondary * 0.62, f.primary * 1.85));
-    optFill = Math.min(0.985, curFill + 0.01); // keep nearly full
-  } else if (cls === 'promo') {
-    optPrice = Math.round(curPrice * 0.92);
-    optFill = Math.min(0.88, curFill + 0.10);
-  } else {
-    optPrice = Math.round(curPrice * 1.08);
-    optFill = curFill;
-  }
-  const optCrowd = Math.round(CAP * optFill);
-  const optRev = Math.round(optCrowd * optPrice);
-  return {cls, curFill, curPrice, curCrowd, curRev, optFill, optPrice, optCrowd, optRev};
-}
-
-function fmt(n){ return n.toLocaleString('en-GB'); }
-function gbp(n){ return '£' + fmt(n); }
-
-function setStandFill(prefix, fill, opt) {
-  // Vertical stands W/E: height from bottom
-  const h = 180 * fill;
-  const el = document.getElementById(prefix + '-fill');
-  if (prefix === 'w' || prefix === 'e') {
-    el.setAttribute('y', 50 + (180 - h));
+function fillStand(id, fill){
+  const el = document.getElementById(id);
+  const isVert = id.endsWith('w') || id.endsWith('e');
+  if(isVert){
+    const h = 170 * fill;
+    el.setAttribute('y', 48 + (170 - h));
     el.setAttribute('height', h);
-  } else if (prefix === 'n') {
-    const hh = 36 * fill;
-    el.setAttribute('y', 18 + (36 - hh));
-    el.setAttribute('height', hh);
-    el.setAttribute('width', 184);
+  } else if(id.endsWith('n')){
+    const h = 34 * fill;
+    el.setAttribute('y', 16 + (34 - h));
+    el.setAttribute('height', h);
   } else {
-    const hh = 36 * fill;
-    el.setAttribute('height', hh);
+    el.setAttribute('height', 34 * fill);
   }
-  el.setAttribute('class', opt ? 'filled-opt' : 'filled');
 }
 
-function renderBowl(fill, opt) {
-  ['w','e','n','s'].forEach(s => setStandFill(s, fill, opt));
-  document.getElementById('stad-cap').textContent = Math.round(fill * 100) + '% full';
+function paintBowl(prefix, fill, labelId, att){
+  ['w','e','n','s'].forEach(s => fillStand(prefix+s, fill));
+  document.getElementById(labelId).textContent = Math.round(fill*100) + '% · ' + att.toLocaleString('en-GB');
 }
 
-function selectFixture(idx) {
-  const f = FIXTURES[idx];
-  const e = estimate(f);
-  document.querySelectorAll('#fixture-rows tr').forEach((tr,i) => tr.classList.toggle('active', i===idx));
-
-  document.getElementById('match-title').textContent = f.date + ' · vs ' + f.opp;
-  document.getElementById('match-sub').textContent =
-    (f.live ? 'Live StubHub UK get-in £' + f.secondary : 'Model secondary £' + f.secondary) +
-    ' vs primary ~£' + f.primary + ' · ' + label(e.cls);
-
-  document.getElementById('cur-price').textContent = gbp(e.curPrice);
-  document.getElementById('cur-fill').textContent = Math.round(e.curFill*100) + '%';
-  document.getElementById('cur-crowd').textContent = fmt(e.curCrowd);
-  document.getElementById('cur-rev').textContent = gbp(e.curRev);
-  document.getElementById('cur-blurb').textContent =
-    e.cls === 'hold'
-      ? 'Ground nearly full at low face value — secondary proves willingness to pay more.'
-      : e.cls === 'promo'
-      ? 'Softer secondary; current bands may need stimulation to fill.'
-      : 'Secondary roughly aligned with face value.';
-
-  document.getElementById('opt-price').textContent = gbp(e.optPrice);
-  document.getElementById('opt-fill').textContent = Math.round(e.optFill*100) + '%';
-  document.getElementById('opt-crowd').textContent = fmt(e.optCrowd);
-  document.getElementById('opt-rev').textContent = gbp(e.optRev);
-  document.getElementById('opt-blurb').textContent =
-    e.cls === 'hold'
-      ? 'Lift average primary toward secondary demand while keeping a full house.'
-      : e.cls === 'promo'
-      ? 'Slightly lower price + targeted promo to lift attendance.'
-      : 'Modest band lift; monitor listings.';
-
-  const lift = e.optRev - e.curRev;
-  document.getElementById('delta-line').textContent =
-    (lift >= 0 ? '+£' : '−£') + fmt(Math.abs(lift)) + ' est. gate vs current strategy on this fixture';
-
-  // Bowl uses current fill; bars show people side-by-side
-  renderBowl(e.curFill, false);
-  document.getElementById('bar-cur').setAttribute('width', 260 * e.curFill);
-  document.getElementById('bar-opt').setAttribute('width', 260 * e.optFill);
-  document.getElementById('bar-cur-lbl').textContent = fmt(e.curCrowd) + ' fans';
-  document.getElementById('bar-opt-lbl').textContent = fmt(e.optCrowd) + ' fans · ' + gbp(e.optRev);
+function renderSummary(){
+  const s = phase === 'historical' ? ANALYSIS.historical : ANALYSIS.projection_pl;
+  const interval = phase === 'projection'
+    ? `<div class="kpi"><div class="v mono">${gbp(s.lift_lo90_sum)}–${gbp(s.lift_hi90_sum)}</div><div class="l">Lift 90% band</div></div>`
+    : `<div class="kpi"><div class="v mono">${s.n_undervalued} / ${s.n_soft||0}</div><div class="l">Undervalued / soft</div></div>`;
+  document.getElementById('summary-kpis').innerHTML = `
+    <div class="kpi"><div class="v mono">${s.n_games}</div><div class="l">Games</div></div>
+    <div class="kpi"><div class="v mono">${gbp(s.actual_matchday_total_gbp)}</div><div class="l">No-change total £</div></div>
+    <div class="kpi"><div class="v mono">${gbp(s.optimized_matchday_total_gbp)}</div><div class="l">Optimized total £</div></div>
+    <div class="kpi lift"><div class="v mono">+${gbp(s.total_lift_gbp)}</div><div class="l">Profit gain (${s.lift_pct}%)</div></div>
+    ${interval}`;
 }
 
-function buildTable() {
-  const tb = document.getElementById('fixture-rows');
-  tb.innerHTML = FIXTURES.map((f,i) => {
-    const e = estimate(f);
-    const gap = Math.round(f.secondary - f.primary);
-    const src = f.live ? '' : ' <span class="muted">(model)</span>';
-    return `<tr onclick="selectFixture(${i})" style="cursor:pointer">
-      <td class="mono">${f.date.slice(5)}</td>
-      <td>${f.opp}${f.bigSix?' ★':''}</td>
-      <td class="mono">£${f.secondary}${src}</td>
-      <td class="mono">£${f.primary}</td>
-      <td class="mono">${gap>=0?'+':''}£${gap}</td>
-      <td><span class="tag ${e.cls}">${label(e.cls)}</span></td>
-    </tr>`;
-  }).join('');
+function renderTable(){
+  const gs = games();
+  document.getElementById('table-title').textContent =
+    phase === 'historical' ? '2025–26 Championship homes (observed attendance)' : '2026–27 PL projection (StubHub + priors)';
+  document.getElementById('rows').innerHTML = gs.map((g,i) => `
+    <tr class="${i===selected?'active':''}" onclick="selectGame(${i})">
+      <td class="mono">${g.date.slice(5)}</td>
+      <td>${g.opponent}</td>
+      <td class="mono">${g.attendance.toLocaleString('en-GB')}</td>
+      <td class="mono">${g.fill_pct}%</td>
+      <td class="mono">£${g.primary}</td>
+      <td class="mono">£${g.secondary_or_wtp}</td>
+      <td class="mono">${gbp(g.actual_total)}</td>
+      <td class="mono">${gbp(g.opt_total)}</td>
+      <td class="mono" style="color:#0f766e;font-weight:700">+${gbp(g.lift)}</td>
+      <td><span class="tag ${g.class}">${g.class}</span></td>
+    </tr>`).join('');
 }
 
-buildTable();
-selectFixture(0);
+function selectGame(i){
+  selected = i;
+  const g = games()[i];
+  renderTable();
+  document.getElementById('match-title').textContent = `${g.date} · vs ${g.opponent}`;
+  let sub = `${g.certainty.replaceAll('_',' ')} · action ${g.action}`;
+  if(g.att_lo90) sub += ` · att 90% band ${g.att_lo90.toLocaleString('en-GB')}–${g.att_hi90.toLocaleString('en-GB')}`;
+  document.getElementById('match-sub').textContent = sub;
+
+  const cf = g.attendance / CAP;
+  const of = g.opt_attendance / CAP;
+  paintBowl('c', cf, 'c-label', g.attendance);
+  paintBowl('o', of, 'o-label', g.opt_attendance);
+
+  document.getElementById('c-ticket').textContent = gbp(g.actual_ticket_rev);
+  document.getElementById('c-conc').textContent = gbp(g.actual_conc_rev);
+  document.getElementById('c-total').textContent = gbp(g.actual_total);
+  document.getElementById('o-ticket').textContent = gbp(g.opt_ticket_rev);
+  document.getElementById('o-conc').textContent = gbp(g.opt_conc_rev);
+  document.getElementById('o-total').textContent = gbp(g.opt_total);
+  document.getElementById('delta').textContent =
+    `+${gbp(g.lift)} matchday gain on this fixture` +
+    (g.lift_lo90 != null ? ` (90% band +${gbp(g.lift_lo90)} to +${gbp(g.lift_hi90)})` : '');
+}
+
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    phase = btn.dataset.phase;
+    selected = 0;
+    renderSummary();
+    selectGame(0);
+  });
+});
+
+renderSummary();
+selectGame(0);
 </script>
 </body>
 </html>
