@@ -155,7 +155,7 @@ def confidence_score(*, observed: bool, days_out: int, tier: int, fill_mape: flo
     score = 48
     reasons = ["League Two own-history fill + club sales prior"]
     score += max(5, 22 - int(fill_mape / 2))
-    reasons.append(f"fill LOO MAPE {fill_mape:.0f}%")
+    reasons.append(f"crowd forecast error about {fill_mape:.0f}% in leave-one-out checks")
     if tier >= 4:
         score += 8
         reasons.append("rivalry / high-tier prior")
