@@ -49,10 +49,21 @@ tr{cursor:pointer} tr:hover td{background:#f7f9fc} tr.active td{background:#fff7
 .panel.opt{border-top:4px solid var(--opt)}
 .panel h4{font-size:16px;margin-bottom:4px}
 .muted{color:var(--muted);font-size:12px}
-.stad{width:100%;max-width:400px;display:block;margin:12px auto 0}
-.stad .empty{fill:var(--empty)}.stad .filled{fill:var(--cur)}.stad .filled-opt{fill:#14b8a6}
-.stad .pitch{fill:var(--pitch)}
-.stad text{font-size:9px;fill:#445;font-family:system-ui}
+.stad{width:100%;max-width:420px;display:block;margin:8px auto 0}
+.stad .bowl-empty{fill:#c5ccd8}
+.stad .bowl-fill{fill:var(--cur)}
+.stad .bowl-fill-opt{fill:#14b8a6}
+.stad .west-upper{fill:#9aa8bc}
+.stad .west-upper-fill{fill:#163f6e}
+.stad .west-upper-fill-opt{fill:#0d9488}
+.stad .away{fill:#b8a4a4}
+.stad .away-fill{fill:#7c3a3a}
+.stad .away-fill-opt{fill:#0f766e}
+.stad .pitch{fill:#2f7a52}
+.stad .pitch-line{fill:none;stroke:#fff;stroke-width:1.2;opacity:.75}
+.stad text{font-size:8px;fill:#3a4250;font-family:system-ui,sans-serif;font-weight:600}
+.stad .cap-lbl{font-size:11px;font-weight:800;fill:#fff}
+.fill-note{font-size:12px;margin-top:8px;padding:8px 10px;border-radius:6px;background:#f3f5f8;color:#334;line-height:1.4}
 .money{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .money .box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
 .money .box .v{font-family:Georgia,serif;font-size:18px;font-weight:700}
@@ -110,18 +121,49 @@ tr{cursor:pointer} tr:hover td{background:#f7f9fc} tr.active td{background:#fff7
     <div class="panel cur">
       <h4>No change — money made as priced</h4>
       <p class="muted">Tickets = attendance × primary band. Concessions = attendance × £8 (see method).</p>
-      <svg class="stad" viewBox="0 0 320 260" aria-label="Current fill">
-        <rect class="empty" x="18" y="48" width="42" height="170" rx="6"/>
-        <rect id="cw" class="filled" x="18" y="48" width="42" height="0" rx="6"/>
-        <rect class="empty" x="260" y="48" width="42" height="170" rx="6"/>
-        <rect id="ce" class="filled" x="260" y="48" width="42" height="0" rx="6"/>
-        <rect class="empty" x="68" y="16" width="184" height="34" rx="6"/>
-        <rect id="cn" class="filled" x="68" y="16" width="184" height="0" rx="6"/>
-        <rect class="empty" x="68" y="214" width="184" height="34" rx="6"/>
-        <rect id="cs" class="filled" x="68" y="214" width="184" height="0" rx="6"/>
-        <rect class="pitch" x="72" y="60" width="176" height="144" rx="4"/>
-        <text id="c-label" x="160" y="136" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#fff">—</text>
+      <svg class="stad" viewBox="0 0 360 300" aria-label="CBS Arena bowl">
+        <defs>
+          <clipPath id="c-fill-clip">
+            <rect id="c-clip-rect" x="0" y="300" width="360" height="0"/>
+          </clipPath>
+        </defs>
+        <!-- Outer bowl empty -->
+        <path class="bowl-empty" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+        <!-- Inner void for pitch -->
+        <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+        <!-- Empty seat rings (schematic rows) -->
+        <path class="bowl-empty" opacity=".55" d="M56,50 H304 Q328,50 328,72 V228 Q328,250 304,250 H56 Q32,250 32,228 V72 Q32,50 56,50 Z M84,74 H276 Q284,74 284,90 V210 Q284,226 276,226 H84 Q76,226 76,210 V90 Q76,74 84,74 Z"/>
+        <!-- West upper tier (two-tier stand) empty -->
+        <path class="west-upper" d="M20,70 H68 V140 H20 Z"/>
+        <path class="west-upper" d="M20,145 H68 V230 H20 Z" opacity=".85"/>
+        <!-- South away blocks empty (west side of south) -->
+        <path class="away" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        <!-- Filled overlay clipped by attendance -->
+        <g clip-path="url(#c-fill-clip)">
+          <path class="bowl-fill" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+          <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+          <path class="west-upper-fill" d="M20,70 H68 V140 H20 Z"/>
+          <path class="west-upper-fill" d="M20,145 H68 V230 H20 Z" opacity=".9"/>
+          <path class="away-fill" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        </g>
+        <!-- Pitch -->
+        <rect class="pitch" x="96" y="92" width="168" height="116" rx="3"/>
+        <rect class="pitch-line" x="96" y="92" width="168" height="116" rx="3"/>
+        <line class="pitch-line" x1="180" y1="92" x2="180" y2="208"/>
+        <circle class="pitch-line" cx="180" cy="150" r="18"/>
+        <rect class="pitch-line" x="96" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="236" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="96" y="132" width="12" height="36"/>
+        <rect class="pitch-line" x="252" y="132" width="12" height="36"/>
+        <text id="c-label" class="cap-lbl" x="180" y="154" text-anchor="middle">—</text>
+        <!-- Labels -->
+        <text x="44" y="155" text-anchor="middle" transform="rotate(-90 44 155)">West · 2-tier</text>
+        <text x="316" y="155" text-anchor="middle" transform="rotate(90 316 155)">East</text>
+        <text x="180" y="36" text-anchor="middle">North · family</text>
+        <text x="180" y="278" text-anchor="middle">South · home / away</text>
+        <text x="88" y="248" text-anchor="middle" style="font-size:7px;fill:#6b3030">Away</text>
       </svg>
+      <p class="fill-note" id="c-fill-note"></p>
       <div class="money">
         <div class="box"><div class="v mono" id="c-ticket">—</div><div class="l">Ticket £</div></div>
         <div class="box"><div class="v mono" id="c-conc">—</div><div class="l">Concession £</div></div>
@@ -130,19 +172,50 @@ tr{cursor:pointer} tr:hover td{background:#f7f9fc} tr.active td{background:#fff7
     </div>
     <div class="panel opt">
       <h4>Optimized — price capture / targeted promo</h4>
-      <p class="muted">Raise price when near-full and willingness-to-pay ≫ face value; or promo-target soft games to lift fill (not blast emails).</p>
-      <svg class="stad" viewBox="0 0 320 260" aria-label="Optimized fill">
-        <rect class="empty" x="18" y="48" width="42" height="170" rx="6"/>
-        <rect id="ow" class="filled-opt" x="18" y="48" width="42" height="0" rx="6"/>
-        <rect class="empty" x="260" y="48" width="42" height="170" rx="6"/>
-        <rect id="oe" class="filled-opt" x="260" y="48" width="42" height="0" rx="6"/>
-        <rect class="empty" x="68" y="16" width="184" height="34" rx="6"/>
-        <rect id="on" class="filled-opt" x="68" y="16" width="184" height="0" rx="6"/>
-        <rect class="empty" x="68" y="214" width="184" height="34" rx="6"/>
-        <rect id="os" class="filled-opt" x="68" y="214" width="184" height="0" rx="6"/>
-        <rect class="pitch" x="72" y="60" width="176" height="144" rx="4"/>
-        <text id="o-label" x="160" y="136" text-anchor="middle" style="font-size:12px;font-weight:700;fill:#fff">—</text>
+      <p class="muted">Near sell-out → raise price, keep attendance. Soft game → targeted promo can increase attendance.</p>
+      <svg class="stad" viewBox="0 0 360 300" aria-label="CBS Arena bowl">
+        <defs>
+          <clipPath id="o-fill-clip">
+            <rect id="o-clip-rect" x="0" y="300" width="360" height="0"/>
+          </clipPath>
+        </defs>
+        <!-- Outer bowl empty -->
+        <path class="bowl-empty" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+        <!-- Inner void for pitch -->
+        <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+        <!-- Empty seat rings (schematic rows) -->
+        <path class="bowl-empty" opacity=".55" d="M56,50 H304 Q328,50 328,72 V228 Q328,250 304,250 H56 Q32,250 32,228 V72 Q32,50 56,50 Z M84,74 H276 Q284,74 284,90 V210 Q284,226 276,226 H84 Q76,226 76,210 V90 Q76,74 84,74 Z"/>
+        <!-- West upper tier (two-tier stand) empty -->
+        <path class="west-upper" d="M20,70 H68 V140 H20 Z"/>
+        <path class="west-upper" d="M20,145 H68 V230 H20 Z" opacity=".85"/>
+        <!-- South away blocks empty (west side of south) -->
+        <path class="away" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        <!-- Filled overlay clipped by attendance -->
+        <g clip-path="url(#o-fill-clip)">
+          <path class="bowl-fill-opt" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+          <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+          <path class="west-upper-fill-opt" d="M20,70 H68 V140 H20 Z"/>
+          <path class="west-upper-fill-opt" d="M20,145 H68 V230 H20 Z" opacity=".9"/>
+          <path class="away-fill-opt" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        </g>
+        <!-- Pitch -->
+        <rect class="pitch" x="96" y="92" width="168" height="116" rx="3"/>
+        <rect class="pitch-line" x="96" y="92" width="168" height="116" rx="3"/>
+        <line class="pitch-line" x1="180" y1="92" x2="180" y2="208"/>
+        <circle class="pitch-line" cx="180" cy="150" r="18"/>
+        <rect class="pitch-line" x="96" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="236" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="96" y="132" width="12" height="36"/>
+        <rect class="pitch-line" x="252" y="132" width="12" height="36"/>
+        <text id="o-label" class="cap-lbl" x="180" y="154" text-anchor="middle">—</text>
+        <!-- Labels -->
+        <text x="44" y="155" text-anchor="middle" transform="rotate(-90 44 155)">West · 2-tier</text>
+        <text x="316" y="155" text-anchor="middle" transform="rotate(90 316 155)">East</text>
+        <text x="180" y="36" text-anchor="middle">North · family</text>
+        <text x="180" y="278" text-anchor="middle">South · home / away</text>
+        <text x="88" y="248" text-anchor="middle" style="font-size:7px;fill:#6b3030">Away</text>
       </svg>
+      <p class="fill-note" id="o-fill-note"></p>
       <div class="money">
         <div class="box"><div class="v mono" id="o-ticket">—</div><div class="l">Ticket £</div></div>
         <div class="box"><div class="v mono" id="o-conc">—</div><div class="l">Concession £</div></div>
@@ -180,25 +253,15 @@ let selected = 0;
 function gbp(n){ return '£' + Math.round(n).toLocaleString('en-GB'); }
 function games(){ return ANALYSIS.games.filter(g => g.phase === phase); }
 
-function fillStand(id, fill){
-  const el = document.getElementById(id);
-  const isVert = id.endsWith('w') || id.endsWith('e');
-  if(isVert){
-    const h = 170 * fill;
-    el.setAttribute('y', 48 + (170 - h));
-    el.setAttribute('height', h);
-  } else if(id.endsWith('n')){
-    const h = 34 * fill;
-    el.setAttribute('y', 16 + (34 - h));
-    el.setAttribute('height', h);
-  } else {
-    el.setAttribute('height', 34 * fill);
-  }
-}
-
 function paintBowl(prefix, fill, labelId, att){
-  ['w','e','n','s'].forEach(s => fillStand(prefix+s, fill));
+  // Reveal filled seats from the bottom of the bowl upward (clip rect)
+  const h = 300 * fill;
+  const rect = document.getElementById(prefix + '-clip-rect');
+  rect.setAttribute('y', 300 - h);
+  rect.setAttribute('height', h);
+  const empty = CAP - att;
   document.getElementById(labelId).textContent = Math.round(fill*100) + '% · ' + att.toLocaleString('en-GB');
+  return empty;
 }
 
 function renderSummary(){
@@ -248,8 +311,14 @@ function selectGame(i){
 
   const cf = g.attendance / CAP;
   const of = g.opt_attendance / CAP;
-  paintBowl('c', cf, 'c-label', g.attendance);
-  paintBowl('o', of, 'o-label', g.opt_attendance);
+  const emptyCur = paintBowl('c', cf, 'c-label', g.attendance);
+  const emptyOpt = paintBowl('o', of, 'o-label', g.opt_attendance);
+  const canLift = g.opt_attendance > g.attendance;
+  document.getElementById('c-fill-note').textContent =
+    `CBS Arena capacity ${CAP.toLocaleString('en-GB')}. About ${emptyCur.toLocaleString('en-GB')} seats empty at this fill.`;
+  document.getElementById('o-fill-note').textContent = canLift
+    ? `Attendance can increase: promo lifts fill from ${g.attendance.toLocaleString('en-GB')} → ${g.opt_attendance.toLocaleString('en-GB')} (+${(g.opt_attendance-g.attendance).toLocaleString('en-GB')} fans).`
+    : `Attendance held near capacity (${g.fill_pct}%): gain comes from higher ticket price, not more people. Empty seats ≈ ${emptyOpt.toLocaleString('en-GB')}.`;
 
   document.getElementById('c-ticket').textContent = gbp(g.actual_ticket_rev);
   document.getElementById('c-conc').textContent = gbp(g.actual_conc_rev);
