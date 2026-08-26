@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Gillingham Matchday Profit — Actual vs Optimized</title>
+<style>
+:root{--ink:#12141a;--muted:#5a6170;--line:#d8dde6;--bg:#eef1f5;--sky:#1a4f8a;--hold:#b45309;--hold-bg:#fff7ed;--promo:#0f766e;--opt:#0f766e;--cur:#1a4f8a;--pitch:#2d6a4f;--empty:#dde3ec}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+.wrap{max-width:1140px;margin:0 auto;padding:28px 18px 60px}
+h1{font-family:Georgia,serif;font-size:clamp(24px,4vw,32px)}
+h2{font-family:Georgia,serif;font-size:20px;margin:26px 0 10px}
+.sub{color:var(--muted);font-size:14px;max-width:820px;margin-top:8px}
+.banner{margin:14px 0;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:8px;font-size:13px}
+.tabs{display:flex;gap:10px;margin:18px 0 8px;flex-wrap:wrap;align-items:center}
+.tabs .nav-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.tabs button{font:700 15px system-ui;padding:14px 22px;border-radius:10px;border:2px solid #1c1c1c;background:#fff;color:#1c1c1c;cursor:pointer;box-shadow:0 1px 0 rgba(28,28,28,.08);transition:background .12s,color .12s,transform .12s}
+.tabs button:hover{background:#eef3f8;transform:translateY(-1px)}
+.tabs button.active{background:#1c1c1c;color:#fff;box-shadow:0 2px 8px rgba(28,28,28,.2)}
+.tabs button .btn-sub{display:block;font:500 11px system-ui;opacity:.85;margin-top:3px;text-transform:none;letter-spacing:0}
+.tab-help{font-size:13px;color:var(--muted);margin:0 0 12px;max-width:820px}
+.table-wrap{overflow:auto;max-height:340px;border:1px solid var(--line);border-radius:8px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.kpi .v{font-family:Georgia,serif;font-size:22px;font-weight:700}
+.kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:4px}
+.kpi.lift .v{color:var(--opt)}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px}
+.card h3{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#1c1c1c;color:#fff;font-size:10px;text-transform:uppercase;padding:7px 8px;text-align:left}
+td{padding:8px;border-bottom:1px solid #eceff4}
+tr{cursor:pointer} tr:hover td{background:#f7f9fc} tr.active td{background:#fff7ed}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
+.tag.undervalued{background:#fff7ed;color:#b45309}
+.tag.soft{background:#ecfdf5;color:#0f766e}
+.tag.fair{background:#eef3f8;color:#3d5a80}
+.tag.high{background:#ecfdf5;color:#0f766e}
+.tag.medium{background:#fff7ed;color:#b45309}
+.tag.low{background:#fef2f2;color:#b91c1c}
+.mono{font-variant-numeric:tabular-nums}
+.select-bar{display:flex;flex-wrap:wrap;align-items:end;gap:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:14px 0 6px}
+.select-bar label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);flex:1;min-width:220px}
+.select-bar select{font:600 16px system-ui;padding:12px 14px;border:2px solid #1c1c1c;border-radius:8px;background:#fff;color:var(--ink);width:100%;cursor:pointer}
+.game-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+@media(max-width:720px){.compare{grid-template-columns:1fr}}
+.panel{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff;box-shadow:0 1px 3px rgba(18,20,26,.06)}
+.panel.cur{border-top:4px solid var(--cur)}
+.panel.opt{border-top:4px solid var(--opt)}
+.panel h4{font-size:16px;margin-bottom:4px}
+.muted{color:var(--muted);font-size:12px}
+.stad{width:100%;max-width:420px;display:block;margin:8px auto 0}
+.stad .bowl-empty{fill:#c5ccd8}
+.stad .bowl-fill{fill:var(--cur)}
+.stad .bowl-fill-opt{fill:#14b8a6}
+.stad .west-upper{fill:#9aa8bc}
+.stad .west-upper-fill{fill:#163f6e}
+.stad .west-upper-fill-opt{fill:#0d9488}
+.stad .away{fill:#b8a4a4}
+.stad .away-fill{fill:#7c3a3a}
+.stad .away-fill-opt{fill:#0f766e}
+.stad .pitch{fill:#2f7a52}
+.stad .pitch-line{fill:none;stroke:#fff;stroke-width:1.2;opacity:.75}
+.stad text{font-size:8px;fill:#3a4250;font-family:system-ui,sans-serif;font-weight:600}
+.stad .cap-lbl{font-size:11px;font-weight:800;fill:#fff}
+.fill-note{font-size:12px;margin-top:8px;padding:8px 10px;border-radius:6px;background:#f3f5f8;color:#334;line-height:1.4}
+.money{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.money .box{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+.money .box .v{font-family:Georgia,serif;font-size:18px;font-weight:700}
+.money .box .l{font-size:10px;color:var(--muted);text-transform:uppercase}
+.delta{margin-top:10px;font-weight:700;color:var(--opt);font-size:14px}
+.method{font-size:13px;color:#444;margin-top:8px}
+.method li{margin:4px 0 4px 16px}
+.foot{margin-top:28px;font-size:11px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Gillingham · Matchday Profit Analysis</h1>
+  <p class="sub">Gillingham matchday economics (EFL League Two): <strong>ticket revenue + concessions</strong>. Left = money made with no pricing change. Right = optimized price capture / targeted promo — stadium filled in both views. Past = 2025–26 League Two observed homes. Future = full 2026–27 League Two home slate (no Premier League). Priestfield capacity 11,582.</p>
+
+  <div class="banner" id="season-banner">
+    <strong>Past:</strong> 2025–26 League Two homes with observed attendance.
+    <strong>Future:</strong> all 23 League Two 2026–27 homes. Own-history fill model + confidence — not a Championship→Premier League jump case.
+  </div>
+
+  <nav class="tabs" aria-label="Time period">
+    <span class="nav-label">View</span>
+    <button type="button" class="active" data-phase="projection" aria-pressed="true">
+      Future · League Two
+      <span class="btn-sub">2026–27 · all 23 homes</span>
+    </button>
+    <button type="button" data-phase="historical" aria-pressed="false">
+      Past
+      <span class="btn-sub">2025–26 League Two · observed</span>
+    </button>
+  </nav>
+  <p class="tab-help" id="tab-help">Opens on Future (League Two 2026–27). Switch to Past for last season’s observed homes.</p>
+
+  <div id="summary-kpis" class="kpi-row"></div>
+
+  <div class="card">
+    <h3 id="table-title">Games — click a row</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th><th>Opponent</th><th>Att</th><th>Fill</th><th>Primary</th><th>WTP / Sec</th><th>Actual £</th><th>Optimized £</th><th>Lift</th><th>Conf</th><th>Call</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 id="match-title" style="margin-top:20px">Stadium · no change vs optimized</h2>
+  <p class="muted" id="match-sub"></p>
+
+  <div class="compare">
+    <div class="panel cur">
+      <h4>No change — money made as priced</h4>
+      <p class="muted">Tickets = attendance × primary band. Concessions = attendance × £6 (see method).</p>
+      <svg class="stad" viewBox="0 0 360 300" aria-label="Priestfield Stadium bowl">
+        <defs>
+          <clipPath id="c-fill-clip">
+            <rect id="c-clip-rect" x="0" y="300" width="360" height="0"/>
+          </clipPath>
+        </defs>
+        <!-- Outer bowl empty -->
+        <path class="bowl-empty" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+        <!-- Inner void for pitch -->
+        <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+        <!-- Empty seat rings (schematic rows) -->
+        <path class="bowl-empty" opacity=".55" d="M56,50 H304 Q328,50 328,72 V228 Q328,250 304,250 H56 Q32,250 32,228 V72 Q32,50 56,50 Z M84,74 H276 Q284,74 284,90 V210 Q284,226 276,226 H84 Q76,226 76,210 V90 Q76,74 84,74 Z"/>
+        <!-- West upper tier (two-tier stand) empty -->
+        <path class="west-upper" d="M20,70 H68 V140 H20 Z"/>
+        <path class="west-upper" d="M20,145 H68 V230 H20 Z" opacity=".85"/>
+        <!-- South away blocks empty (west side of south) -->
+        <path class="away" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        <!-- Filled overlay clipped by attendance -->
+        <g clip-path="url(#c-fill-clip)">
+          <path class="bowl-fill" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+          <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+          <path class="west-upper-fill" d="M20,70 H68 V140 H20 Z"/>
+          <path class="west-upper-fill" d="M20,145 H68 V230 H20 Z" opacity=".9"/>
+          <path class="away-fill" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        </g>
+        <!-- Pitch -->
+        <rect class="pitch" x="96" y="92" width="168" height="116" rx="3"/>
+        <rect class="pitch-line" x="96" y="92" width="168" height="116" rx="3"/>
+        <line class="pitch-line" x1="180" y1="92" x2="180" y2="208"/>
+        <circle class="pitch-line" cx="180" cy="150" r="18"/>
+        <rect class="pitch-line" x="96" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="236" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="96" y="132" width="12" height="36"/>
+        <rect class="pitch-line" x="252" y="132" width="12" height="36"/>
+        <text id="c-label" class="cap-lbl" x="180" y="154" text-anchor="middle">—</text>
+        <!-- Labels -->
+        <text x="44" y="155" text-anchor="middle" transform="rotate(-90 44 155)">Rainham End</text>
+        <text x="316" y="155" text-anchor="middle" transform="rotate(90 316 155)">Medway Stand</text>
+        <text x="180" y="36" text-anchor="middle">Gordon Road</text>
+        <text x="180" y="278" text-anchor="middle">Brian Moore / away</text>
+        <text x="88" y="248" text-anchor="middle" style="font-size:7px;fill:#6b3030">Away</text>
+      </svg>
+      <p class="fill-note" id="c-fill-note"></p>
+      <div class="money">
+        <div class="box"><div class="v mono" id="c-ticket">—</div><div class="l">Ticket £</div></div>
+        <div class="box"><div class="v mono" id="c-conc">—</div><div class="l">Concession £</div></div>
+        <div class="box" style="grid-column:1/-1"><div class="v mono" id="c-total">—</div><div class="l">Total matchday £</div></div>
+      </div>
+    </div>
+    <div class="panel opt">
+      <h4>Optimized — price capture / targeted promo</h4>
+      <p class="muted">Near sell-out → raise price, keep attendance. Soft game → targeted promo can increase attendance.</p>
+      <svg class="stad" viewBox="0 0 360 300" aria-label="Priestfield Stadium bowl">
+        <defs>
+          <clipPath id="o-fill-clip">
+            <rect id="o-clip-rect" x="0" y="300" width="360" height="0"/>
+          </clipPath>
+        </defs>
+        <!-- Outer bowl empty -->
+        <path class="bowl-empty" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+        <!-- Inner void for pitch -->
+        <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+        <!-- Empty seat rings (schematic rows) -->
+        <path class="bowl-empty" opacity=".55" d="M56,50 H304 Q328,50 328,72 V228 Q328,250 304,250 H56 Q32,250 32,228 V72 Q32,50 56,50 Z M84,74 H276 Q284,74 284,90 V210 Q284,226 276,226 H84 Q76,226 76,210 V90 Q76,74 84,74 Z"/>
+        <!-- West upper tier (two-tier stand) empty -->
+        <path class="west-upper" d="M20,70 H68 V140 H20 Z"/>
+        <path class="west-upper" d="M20,145 H68 V230 H20 Z" opacity=".85"/>
+        <!-- South away blocks empty (west side of south) -->
+        <path class="away" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        <!-- Filled overlay clipped by attendance -->
+        <g clip-path="url(#o-fill-clip)">
+          <path class="bowl-fill-opt" d="M48,42 H312 Q340,42 340,70 V230 Q340,258 312,258 H48 Q20,258 20,230 V70 Q20,42 48,42 Z"/>
+          <path fill="#eef1f5" d="M88,78 H272 Q288,78 288,94 V206 Q288,222 272,222 H88 Q72,222 72,206 V94 Q72,78 88,78 Z"/>
+          <path class="west-upper-fill-opt" d="M20,70 H68 V140 H20 Z"/>
+          <path class="west-upper-fill-opt" d="M20,145 H68 V230 H20 Z" opacity=".9"/>
+          <path class="away-fill-opt" d="M48,222 H130 V258 H48 Q20,258 20,230 V222 Z"/>
+        </g>
+        <!-- Pitch -->
+        <rect class="pitch" x="96" y="92" width="168" height="116" rx="3"/>
+        <rect class="pitch-line" x="96" y="92" width="168" height="116" rx="3"/>
+        <line class="pitch-line" x1="180" y1="92" x2="180" y2="208"/>
+        <circle class="pitch-line" cx="180" cy="150" r="18"/>
+        <rect class="pitch-line" x="96" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="236" y="118" width="28" height="64"/>
+        <rect class="pitch-line" x="96" y="132" width="12" height="36"/>
+        <rect class="pitch-line" x="252" y="132" width="12" height="36"/>
+        <text id="o-label" class="cap-lbl" x="180" y="154" text-anchor="middle">—</text>
+        <!-- Labels -->
+        <text x="44" y="155" text-anchor="middle" transform="rotate(-90 44 155)">West · 2-tier</text>
+        <text x="316" y="155" text-anchor="middle" transform="rotate(90 316 155)">East</text>
+        <text x="180" y="36" text-anchor="middle">North · family</text>
+        <text x="180" y="278" text-anchor="middle">South · home / away</text>
+        <text x="88" y="248" text-anchor="middle" style="font-size:7px;fill:#6b3030">Away</text>
+      </svg>
+      <p class="fill-note" id="o-fill-note"></p>
+      <div class="money">
+        <div class="box"><div class="v mono" id="o-ticket">—</div><div class="l">Ticket £</div></div>
+        <div class="box"><div class="v mono" id="o-conc">—</div><div class="l">Concession £</div></div>
+        <div class="box" style="grid-column:1/-1"><div class="v mono" id="o-total">—</div><div class="l">Total matchday £</div></div>
+      </div>
+      <p class="delta" id="delta"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Method</h3>
+    <ul class="method" id="method-list">
+      <li><strong>Past vs Future:</strong> Past = finished 2025–26 League Two homes with published attendance. Future = full 23-game League Two home slate for 2026–27.</li>
+      <li><strong>No Premier League module:</strong> Gillingham are EFL League Two — this is not a Championship→PL promotion-jump model.</li>
+      <li><strong>Predictive model:</strong> GradientBoosting fill from Gillingham’s own League Two history by opponent tier; willingness-to-pay implied from fill. Confidence 0–100.</li>
+      <li><strong>Ticket revenue</strong> = attendance × estimated League Two primary band (~£20–25).</li>
+      <li><strong>Concession revenue (assumption):</strong> £6 per person (lower-league F&amp;B placeholder). Same on both sides so lift is ticket / fill.</li>
+      <li><strong>Optimization:</strong> PRICE_CAPTURE when relatively full and WTP ≫ face; PROMO_TARGET on soft gates (common at this level).</li>
+    </ul>
+  </div>
+
+  <footer class="foot">
+    Priestfield capacity 11,582 · Analysis JSON: results/gillingham_profit_analysis.json ·
+    <a href="https://github.com/colbymorris08/ticketpricemodel">github.com/colbymorris08/ticketpricemodel</a> ·
+    <a href="https://colbymorris08.github.io/ticketpricemodel/gillingham_explorer.html">Public page</a>
+  </footer>
+</div>
+<script>
+const ANALYSIS = {"capacity":11582,"conc_per_head_gbp":6.0,"as_of":"2026-08-26","historical":{"n_games":0,"actual_matchday_total_gbp":0,"optimized_matchday_total_gbp":0,"total_lift_gbp":0,"lift_pct":0,"n_undervalued":0,"n_soft":0},"projection_pl":{"n_games":0,"actual_matchday_total_gbp":0,"optimized_matchday_total_gbp":0,"total_lift_gbp":0,"lift_pct":0,"lift_lo90_sum":0,"lift_hi90_sum":0},"games":[],"method":{},"model":{}};
+
+const CAP = ANALYSIS.capacity;
+const CONC = ANALYSIS.conc_per_head_gbp;
+let phase = 'projection';
+let selected = 0;
+
+function gbp(n){ return '£' + Math.round(n).toLocaleString('en-GB'); }
+function games(){ return ANALYSIS.games.filter(g => g.phase === phase); }
+function confOf(g){ return g.confidence != null ? g.confidence : (g.phase === 'historical' ? 95 : 50); }
+function confLabel(g){ return g.confidence_label || (confOf(g) >= 75 ? 'high' : confOf(g) >= 55 ? 'medium' : 'low'); }
+
+function paintBowl(prefix, fill, labelId, att){
+  // Reveal filled seats from the bottom of the bowl upward (clip rect)
+  const h = 300 * fill;
+  const rect = document.getElementById(prefix + '-clip-rect');
+  rect.setAttribute('y', 300 - h);
+  rect.setAttribute('height', h);
+  const empty = CAP - att;
+  document.getElementById(labelId).textContent = Math.round(fill*100) + '% · ' + att.toLocaleString('en-GB');
+  return empty;
+}
+
+function renderBanner(){
+  const m = ANALYSIS.method || {};
+  const pl = ANALYSIS.projection_pl || {};
+  const model = ANALYSIS.model || {};
+  const played = pl.n_played != null ? pl.n_played : 0;
+  const live = pl.n_live_stubhub != null ? pl.n_live_stubhub : 0;
+  document.getElementById('season-banner').innerHTML =
+    `<strong>As of ${ANALYSIS.as_of || 'today'}:</strong> ${played} of ${pl.n_games || 23} League Two homes played/logged` +
+    (model.first_home_date ? ` (first home ${model.first_home_date})` : '') +
+    `. Own-history fill model` +
+    (model.fill_loo_mape_pct != null ? ` (fill LOO MAPE ≈ ${model.fill_loo_mape_pct}%)` : '') +
+    `. ${m.played_status || ''} ${model.note || ''}`;
+}
+
+function renderSummary(){
+  const s = phase === 'historical' ? ANALYSIS.historical : ANALYSIS.projection_pl;
+  const interval = phase === 'projection'
+    ? `<div class="kpi"><div class="v mono">${gbp(s.lift_lo90_sum)}–${gbp(s.lift_hi90_sum)}</div><div class="l">Lift 90% band</div></div>`
+    : `<div class="kpi"><div class="v mono">${s.n_undervalued} / ${s.n_soft||0}</div><div class="l">Undervalued / soft</div></div>`;
+  const confKpi = `<div class="kpi"><div class="v mono">${s.avg_confidence != null ? s.avg_confidence : '—'}</div><div class="l">Avg confidence</div></div>`;
+  document.getElementById('summary-kpis').innerHTML = `
+    <div class="kpi"><div class="v mono">${s.n_games}</div><div class="l">Games</div></div>
+    <div class="kpi"><div class="v mono">${gbp(s.actual_matchday_total_gbp)}</div><div class="l">No-change total £</div></div>
+    <div class="kpi"><div class="v mono">${gbp(s.optimized_matchday_total_gbp)}</div><div class="l">Optimized total £</div></div>
+    <div class="kpi lift"><div class="v mono">+${gbp(s.total_lift_gbp)}</div><div class="l">Profit gain (${s.lift_pct}%)</div></div>
+    ${interval}${confKpi}`;
+  document.getElementById('tab-help').textContent = phase === 'historical'
+    ? 'Past: League Two 2025–26 homes — attendance observed (high confidence). Click a row for stadiums.'
+    : 'Future · League Two: all 23 homes. Conf = model confidence (observed played = high; far soft fixtures = lower). Click a row for stadiums.';
+}
+
+function renderTable(){
+  const gs = games();
+  document.getElementById('table-title').textContent = phase === 'historical'
+    ? 'Past games (League Two 2025–26) — click a row'
+    : 'Full League Two home slate 2026–27 (23) — click a row';
+  document.getElementById('rows').innerHTML = gs.map((g,i) => `
+    <tr class="${i===selected?'active':''}" onclick="selectGame(${i})">
+      <td class="mono">${g.date.slice(5)}</td>
+      <td>${g.opponent}${g.played ? ' <span class="muted">played</span>' : ''}</td>
+      <td class="mono">${g.attendance.toLocaleString('en-GB')}</td>
+      <td class="mono">${g.fill_pct}%</td>
+      <td class="mono">£${g.primary}</td>
+      <td class="mono">£${g.secondary_or_wtp}</td>
+      <td class="mono">${gbp(g.actual_total)}</td>
+      <td class="mono">${gbp(g.opt_total)}</td>
+      <td class="mono" style="color:#0f766e;font-weight:700">+${gbp(g.lift)}</td>
+      <td><span class="tag ${confLabel(g)}">${confOf(g)}</span></td>
+      <td><span class="tag ${g.class}">${g.class}</span></td>
+    </tr>`).join('');
+}
+
+function selectGame(i){
+  selected = i;
+  const g = games()[i];
+  renderTable();
+  document.getElementById('match-title').textContent = `${g.date} · vs ${g.opponent}`;
+  let sub = `Confidence ${confOf(g)}/100 (${confLabel(g)})` +
+    (g.confidence_reason ? ` — ${g.confidence_reason}` : '') +
+    ` · ${String(g.certainty||'').replaceAll('_',' ')} · ${g.action}` +
+    ` · concessions = ${g.attendance.toLocaleString('en-GB')} × £${CONC} = ${gbp(g.actual_conc_rev)}`;
+  if(g.att_lo90) sub += ` · att 90% band ${Number(g.att_lo90).toLocaleString('en-GB')}–${Number(g.att_hi90).toLocaleString('en-GB')}`;
+  if(g.model_secondary != null && g.secondary_source === 'live_stubhub')
+    sub += ` · model would have said £${g.model_secondary}`;
+  document.getElementById('match-sub').textContent = sub;
+
+  const cf = g.attendance / CAP;
+  const of = g.opt_attendance / CAP;
+  const emptyCur = paintBowl('c', cf, 'c-label', g.attendance);
+  const emptyOpt = paintBowl('o', of, 'o-label', g.opt_attendance);
+  const canLift = g.opt_attendance > g.attendance;
+  document.getElementById('c-fill-note').textContent =
+    `Priestfield capacity ${CAP.toLocaleString('en-GB')}. About ${emptyCur.toLocaleString('en-GB')} seats empty at this fill.`;
+  document.getElementById('o-fill-note').textContent = canLift
+    ? `Attendance can increase: promo lifts fill from ${g.attendance.toLocaleString('en-GB')} → ${g.opt_attendance.toLocaleString('en-GB')} (+${(g.opt_attendance-g.attendance).toLocaleString('en-GB')} fans).`
+    : `Attendance held near capacity (${g.fill_pct}%): gain comes from higher ticket price, not more people. Empty seats ≈ ${emptyOpt.toLocaleString('en-GB')}.`;
+
+  document.getElementById('c-ticket').textContent = gbp(g.actual_ticket_rev);
+  document.getElementById('c-conc').textContent = gbp(g.actual_conc_rev);
+  document.getElementById('c-total').textContent = gbp(g.actual_total);
+  document.getElementById('o-ticket').textContent = gbp(g.opt_ticket_rev);
+  document.getElementById('o-conc').textContent = gbp(g.opt_conc_rev);
+  document.getElementById('o-total').textContent = gbp(g.opt_total);
+  document.getElementById('delta').textContent =
+    `+${gbp(g.lift)} matchday gain on this fixture` +
+    (g.lift_lo90 != null ? ` (90% band +${gbp(g.lift_lo90)} to +${gbp(g.lift_hi90)})` : '');
+}
+
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed','false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed','true');
+    phase = btn.dataset.phase;
+    selected = 0;
+    renderSummary();
+    selectGame(0);
+  });
+});
+
+renderBanner();
+renderSummary();
+selectGame(0);
+</script>
+</body>
+</html>
