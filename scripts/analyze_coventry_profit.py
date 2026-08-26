@@ -2,14 +2,14 @@
 """
 Coventry matchday revenue: actual vs optimized.
 
-Method borrows Warriors ticket-timing analytics framing (HBS case + lab CSV):
-  total_matchday = ticket_revenue + concession_revenue
-  Customer timing segments inform promo targeting (Planner / In-Between / Last-Minute).
-  Optimization = capture willingness-to-pay when arena is near capacity (price too low),
-                 or lift fill with targeted promo when soft (Warriors-style targeting, not spray).
+Methodology ideas (not Warriors profit numbers):
+  - Matchday = ticket revenue + concession revenue (structure borrowed from sports analytics practice)
+  - Timing segments (Planner / In-Between / Last-Minute) → target promos, don't spray
+  - PRICE_CAPTURE when arena near capacity and willingness-to-pay ≫ face value
+  - PROMO_TARGET when soft demand → lift fill with targeted offers
 
-Historical certainty: 2025-26 Championship home attendances (completed).
-Forward projection: 2026-27 PL homes using live StubHub secondary + historical fill priors.
+All £ figures are Coventry-specific: observed Championship attendances, estimated
+primary bands, StubHub UK secondary (PL), UK matchday F&B assumption (£8/head).
 """
 
 from __future__ import annotations
@@ -26,10 +26,10 @@ OUT_JSON = ROOT / "results" / "coventry_profit_analysis.json"
 OUT_CSV = ROOT / "results" / "coventry_profit_by_game.csv"
 CAP = 32609
 
-# Warriors lab: ~$5.27 concession per ticket; UK football matchday F&B ~£8/head (scaled domain)
+# UK football matchday F&B assumption (not transferred from NBA lab prices)
 CONC_PER_HEAD = 8.0
 
-# How much of secondary–primary gap we can capture without killing fill when near sellout
+# Share of secondary–primary gap capturable on near-sellouts without cutting fill
 CAPTURE_RATE = 0.55
 
 
@@ -54,7 +54,7 @@ def optimize_game(att: int, primary: float, secondary: float) -> dict:
     actual_total = ticket_rev + conc_rev
 
     # Near capacity + secondary >> primary → undervalued: raise price, keep fill
-    # Soft fill → Warriors-style promo: slight price cut + fill lift (targeted, not blast)
+    # Soft fill → targeted promo (timing segments), not blast emails: slight price cut + fill lift
     ratio = secondary / max(primary, 1)
 
     if fill >= 0.88 and ratio >= 1.25:
@@ -175,7 +175,8 @@ def main() -> None:
         "conc_per_head_gbp": CONC_PER_HEAD,
         "capture_rate": CAPTURE_RATE,
         "method": {
-            "source": "Warriors ticket timing + matchday revenue (ticket + concession)",
+            "ideas_from": "Sports ticket analytics practice (timing segments, ticket+concession, targeted promo vs spray) — ideas only, not NBA profit rates",
+            "projections_from": "Coventry observed attendance, primary bands, StubHub UK secondary, UK £8/head F&B",
             "historical": "2025-26 Championship home attendances (observed)",
             "wtp_proxy": "fill-based willingness-to-pay when StubHub history unavailable",
             "optimization": "PRICE_CAPTURE when near-full & secondary>>primary; PROMO_TARGET when soft",

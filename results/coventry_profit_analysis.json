@@ -3,7 +3,8 @@
   "conc_per_head_gbp": 8.0,
   "capture_rate": 0.55,
   "method": {
-    "source": "Warriors ticket timing + matchday revenue (ticket + concession)",
+    "ideas_from": "Sports ticket analytics practice (timing segments, ticket+concession, targeted promo vs spray) \u2014 ideas only, not NBA profit rates",
+    "projections_from": "Coventry observed attendance, primary bands, StubHub UK secondary, UK \u00a38/head F&B",
     "historical": "2025-26 Championship home attendances (observed)",
     "wtp_proxy": "fill-based willingness-to-pay when StubHub history unavailable",
     "optimization": "PRICE_CAPTURE when near-full & secondary>>primary; PROMO_TARGET when soft"
