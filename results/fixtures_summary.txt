@@ -1,9 +1,9 @@
-Fixtures loaded as of 2026-08-29
+Fixtures loaded as of 2026-08-30
 
 === Coventry City — next 3 home (PL 2026-27) ===
-  2026-08-29 vs Hull City (MW2)
   2026-09-13 vs Brighton & Hove Albion (MW4)
   2026-10-10 vs Newcastle United (MW8)
+  2026-10-24 vs Fulham (MW9)
 
 === Portland Fire — completed home: 15 | upcoming: 7 ===
   2026-08-06 vs Toronto Tempo (tier 3)
