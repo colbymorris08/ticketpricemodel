@@ -1,0 +1,6 @@
+secondary_get_in,listing_count_est,obs_source,snapshot_date,search_url,event_url,fixture_date,home,away,fixture_id,track,horizon_days,days_out
+81.0,36,stubhub_uk_live,2026-09-03,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Brighton%20%26%20Hove%20Albion%20tickets,,2026-09-13,Coventry City,Brighton & Hove Albion,cov-2627-h02,pl_coventry,10,
+243.0,24,stubhub_uk_live,2026-09-03,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Newcastle%20United%20tickets,,2026-10-10,Coventry City,Newcastle United,cov-2627-h03,pl_coventry,37,
+67.0,36,stubhub_uk_live,2026-09-03,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Fulham%20tickets,,2026-10-24,Coventry City,Fulham,cov-2627-h04,pl_coventry,51,
+40.0,54,wnba_tier_prior,2026-09-03,,,2026-09-17,Portland Fire,Phoenix Mercury,por-26-h21,wnba_portland,14,14.0
+52.0,42,wnba_tier_prior,2026-09-03,,,2026-09-22,Portland Fire,Golden State Valkyries,por-26-h22,wnba_portland,19,19.0
