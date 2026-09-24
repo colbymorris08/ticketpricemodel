@@ -1,0 +1,4 @@
+secondary_get_in,listing_count_est,obs_source,snapshot_date,search_url,event_url,fixture_date,home,away,fixture_id,track,horizon_days
+243.0,24,stubhub_uk_live,2026-09-24,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Newcastle%20United%20tickets,,2026-10-10,Coventry City,Newcastle United,cov-2627-h03,pl_coventry,16
+148.0,24,stubhub_uk_live,2026-09-24,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Fulham%20tickets,,2026-10-24,Coventry City,Fulham,cov-2627-h04,pl_coventry,30
+243.0,12,stubhub_uk_live,2026-09-24,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Sunderland%20tickets,,2026-10-31,Coventry City,Sunderland,cov-2627-h05,pl_coventry,37
