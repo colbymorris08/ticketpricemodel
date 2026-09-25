@@ -1,0 +1,44 @@
+[
+  {
+    "secondary_get_in":243.0,
+    "listing_count_est":24,
+    "obs_source":"stubhub_uk_live",
+    "snapshot_date":"2026-09-25",
+    "search_url":"https:\/\/www.stubhub.co.uk\/find\/s\/?q=Coventry%20City%20Newcastle%20United%20tickets",
+    "event_url":"",
+    "fixture_date":"2026-10-10",
+    "home":"Coventry City",
+    "away":"Newcastle United",
+    "fixture_id":"cov-2627-h03",
+    "track":"pl_coventry",
+    "horizon_days":15
+  },
+  {
+    "secondary_get_in":148.0,
+    "listing_count_est":24,
+    "obs_source":"stubhub_uk_live",
+    "snapshot_date":"2026-09-25",
+    "search_url":"https:\/\/www.stubhub.co.uk\/find\/s\/?q=Coventry%20City%20Fulham%20tickets",
+    "event_url":"",
+    "fixture_date":"2026-10-24",
+    "home":"Coventry City",
+    "away":"Fulham",
+    "fixture_id":"cov-2627-h04",
+    "track":"pl_coventry",
+    "horizon_days":29
+  },
+  {
+    "secondary_get_in":243.0,
+    "listing_count_est":12,
+    "obs_source":"stubhub_uk_live",
+    "snapshot_date":"2026-09-25",
+    "search_url":"https:\/\/www.stubhub.co.uk\/find\/s\/?q=Coventry%20City%20Sunderland%20tickets",
+    "event_url":"",
+    "fixture_date":"2026-10-31",
+    "home":"Coventry City",
+    "away":"Sunderland",
+    "fixture_id":"cov-2627-h05",
+    "track":"pl_coventry",
+    "horizon_days":36
+  }
+]
