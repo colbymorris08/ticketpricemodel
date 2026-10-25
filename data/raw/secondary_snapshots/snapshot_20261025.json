@@ -1,0 +1,47 @@
+[
+  {
+    "secondary_get_in":243.0,
+    "listing_count_est":12,
+    "obs_source":"stubhub_uk_live",
+    "snapshot_date":"2026-10-25",
+    "search_url":"https:\/\/www.stubhub.co.uk\/find\/s\/?q=Coventry%20City%20Sunderland%20tickets",
+    "event_url":"",
+    "fixture_date":"2026-10-31",
+    "home":"Coventry City",
+    "away":"Sunderland",
+    "fixture_id":"cov-2627-h05",
+    "track":"pl_coventry",
+    "horizon_days":6,
+    "days_out":null
+  },
+  {
+    "secondary_get_in":162.0,
+    "listing_count_est":12,
+    "obs_source":"stubhub_uk_live",
+    "snapshot_date":"2026-10-25",
+    "search_url":"https:\/\/www.stubhub.co.uk\/find\/s\/?q=Coventry%20City%20Crystal%20Palace%20tickets",
+    "event_url":"",
+    "fixture_date":"2026-11-21",
+    "home":"Coventry City",
+    "away":"Crystal Palace",
+    "fixture_id":"cov-2627-h06",
+    "track":"pl_coventry",
+    "horizon_days":27,
+    "days_out":null
+  },
+  {
+    "secondary_get_in":48.0,
+    "listing_count_est":55,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-10-25",
+    "search_url":null,
+    "event_url":null,
+    "fixture_date":"2026-12-02",
+    "home":"Coventry City",
+    "away":"Ipswich Town",
+    "fixture_id":"cov-2627-h07",
+    "track":"pl_coventry",
+    "horizon_days":38,
+    "days_out":38.0
+  }
+]
