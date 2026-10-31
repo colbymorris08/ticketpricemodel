@@ -1,0 +1,41 @@
+[
+  {
+    "secondary_get_in":69.0,
+    "listing_count_est":28,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-10-31",
+    "fixture_date":"2026-10-31",
+    "home":"Coventry City",
+    "away":"Sunderland",
+    "days_out":0,
+    "fixture_id":"cov-2627-h05",
+    "track":"pl_coventry",
+    "horizon_days":0
+  },
+  {
+    "secondary_get_in":42.0,
+    "listing_count_est":55,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-10-31",
+    "fixture_date":"2026-11-21",
+    "home":"Coventry City",
+    "away":"Crystal Palace",
+    "days_out":21,
+    "fixture_id":"cov-2627-h06",
+    "track":"pl_coventry",
+    "horizon_days":21
+  },
+  {
+    "secondary_get_in":48.0,
+    "listing_count_est":55,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-10-31",
+    "fixture_date":"2026-12-02",
+    "home":"Coventry City",
+    "away":"Ipswich Town",
+    "days_out":32,
+    "fixture_id":"cov-2627-h07",
+    "track":"pl_coventry",
+    "horizon_days":32
+  }
+]

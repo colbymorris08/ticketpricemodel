@@ -1,0 +1,4 @@
+secondary_get_in,listing_count_est,obs_source,snapshot_date,fixture_date,home,away,days_out,fixture_id,track,horizon_days
+69.0,28,pl_tier_prior,2026-10-31,2026-10-31,Coventry City,Sunderland,0,cov-2627-h05,pl_coventry,0
+42.0,55,pl_tier_prior,2026-10-31,2026-11-21,Coventry City,Crystal Palace,21,cov-2627-h06,pl_coventry,21
+48.0,55,pl_tier_prior,2026-10-31,2026-12-02,Coventry City,Ipswich Town,32,cov-2627-h07,pl_coventry,32
