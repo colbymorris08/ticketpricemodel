@@ -1,0 +1,4 @@
+secondary_get_in,listing_count_est,obs_source,snapshot_date,fixture_date,home,away,days_out,fixture_id,track,horizon_days,search_url,event_url
+42.0,55,pl_tier_prior,2026-11-06,2026-11-21,Coventry City,Crystal Palace,15.0,cov-2627-h06,pl_coventry,15,,
+48.0,55,pl_tier_prior,2026-11-06,2026-12-02,Coventry City,Ipswich Town,26.0,cov-2627-h07,pl_coventry,26,,
+283.0,12,stubhub_uk_live,2026-11-06,2026-12-12,Coventry City,Aston Villa,,cov-2627-h08,pl_coventry,36,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Aston%20Villa%20tickets,
