@@ -1,0 +1,4 @@
+secondary_get_in,listing_count_est,obs_source,snapshot_date,fixture_date,home,away,days_out,fixture_id,track,horizon_days,search_url,event_url
+58.5,55,pl_tier_prior,2026-11-25,2026-12-02,Coventry City,Ipswich Town,7.0,cov-2627-h07,pl_coventry,7,,
+202.0,12,stubhub_uk_live,2026-11-25,2026-12-12,Coventry City,Aston Villa,,cov-2627-h08,pl_coventry,17,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Aston%20Villa%20tickets,
+162.0,24,stubhub_uk_live,2026-11-25,2026-12-26,Coventry City,Chelsea,,cov-2627-h09,pl_coventry,31,https://www.stubhub.co.uk/find/s/?q=Coventry%20City%20Chelsea%20tickets,
