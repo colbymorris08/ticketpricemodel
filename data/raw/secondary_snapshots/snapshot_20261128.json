@@ -1,0 +1,47 @@
+[
+  {
+    "secondary_get_in":63.0,
+    "listing_count_est":28,
+    "obs_source":"pl_tier_prior",
+    "snapshot_date":"2026-11-28",
+    "fixture_date":"2026-12-02",
+    "home":"Coventry City",
+    "away":"Ipswich Town",
+    "days_out":4.0,
+    "fixture_id":"cov-2627-h07",
+    "track":"pl_coventry",
+    "horizon_days":4,
+    "search_url":null,
+    "event_url":null
+  },
+  {
+    "secondary_get_in":202.0,
+    "listing_count_est":12,
+    "obs_source":"stubhub_uk_live",
+    "snapshot_date":"2026-11-28",
+    "fixture_date":"2026-12-12",
+    "home":"Coventry City",
+    "away":"Aston Villa",
+    "days_out":null,
+    "fixture_id":"cov-2627-h08",
+    "track":"pl_coventry",
+    "horizon_days":14,
+    "search_url":"https:\/\/www.stubhub.co.uk\/find\/s\/?q=Coventry%20City%20Aston%20Villa%20tickets",
+    "event_url":""
+  },
+  {
+    "secondary_get_in":162.0,
+    "listing_count_est":24,
+    "obs_source":"stubhub_uk_live",
+    "snapshot_date":"2026-11-28",
+    "fixture_date":"2026-12-26",
+    "home":"Coventry City",
+    "away":"Chelsea",
+    "days_out":null,
+    "fixture_id":"cov-2627-h09",
+    "track":"pl_coventry",
+    "horizon_days":28,
+    "search_url":"https:\/\/www.stubhub.co.uk\/find\/s\/?q=Coventry%20City%20Chelsea%20tickets",
+    "event_url":""
+  }
+]
